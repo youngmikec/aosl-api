@@ -185,7 +185,7 @@ import { response, success, fail } from '../../util/response.js';
   export const adminLoginHandler = async (req, res) => {
     try {
       if (!req.body.currentIp) req.body.currentIp = getRequestIp(req);
-      if (!req.body.type) req.body.type = getLoginType(req.body);
+    //   if (!req.body.type) req.body.type = getLoginType(req.body);
       req.body.userType = USER_TYPE.ADMIN;
       const result = await loginService(req.body);
       return success(res, 201, result, "Login was successful!");

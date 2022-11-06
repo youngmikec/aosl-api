@@ -33,14 +33,14 @@ export const fetchService = async (query) => {
               { $text: { $search: escaped, $caseSensitive: false } },
             ];
             delete filter.q;
-          }
+        }
         let { limit } = aqp(query);
         limit = setLimit(limit);
         if (!filter.deleted) filter.deleted = 0;
 
-        const total = await User.countDocuments(filter).exec();
+        const total = await Users.countDocuments(filter).exec();
 
-        const result = await User.find(filter)
+        const result = await Users.find(filter)
         .populate(population)
         .skip(skip)
         .limit(limit)
@@ -73,13 +73,13 @@ export const loginService = async (loginPayload) => {
         // filter.userType = USER_TYPE.ADMIN;
         usersType = USER_TYPE.ADMIN;
         filter.email = email;
-        filter.password = password;
+        // filter.password = password;
     }
     
     if (userType === USER_TYPE.USER) {
         usersType = USER_TYPE.USER;
-        // filter.userType = USER_TYPE.USER;
         filter.email = email;
+        // filter.userType = USER_TYPE.USER;
         // filter.password = password;
       }
 

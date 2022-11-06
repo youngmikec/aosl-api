@@ -106,9 +106,9 @@ export const schema = {
     deletedBy: { type: ObjectId, select: false },
   };
 
-  const options = DATABASE.OPTIONS;
+const options = DATABASE.OPTIONS;
 
-  const newSchema = new Schema(schema, options);
+const newSchema = new Schema(schema, options);
 
 newSchema.index({ phone: 1, email: 1 }, { unique: true });
 newSchema.index({ surname: 1 });

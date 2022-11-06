@@ -1,8 +1,27 @@
+import joi from 'joi';
 import mongoose from 'mongoose';
-import { AIRTIME } from '../../constant/index';
+import { AIRTIME, DATABASE } from '../../constant/index';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
+
+export const validateCreate = joi.object({
+    name: joi.string().trim().required(),
+    shortName: joi.string().trim().required(),
+    rate: joi.number().required(),
+    txnNetwork: joi.string().trim().required(),
+    txnNetworkNumber: joi.string().trim().required(),
+    paymentSteps: joi.array().items(
+        joi.object({
+            title: joi.string().required(),
+            description: joi.string().required()
+        })
+    ).optional(),
+    paymentDescription: joi.string().optional(),
+    createdBy: joi.string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .optional()
+})
 
 
 export const schema = {
@@ -34,4 +53,16 @@ export const schema = {
     deletedAt: { type: Date, select: false },
     deletedBy: { type: ObjectId, select: false },
 }
+
+const options = DATABASE.OPTIONS;
+
+const newSchema = new Schema(schema, options);
+
+newSchema.index({ name: 1 }, { unique: true });
+
+newSchema.set('collection', 'airtime');
+
+const Airtime = mongoose.model('Airtime', newSchema);
+
+export default Airtime;
 
