@@ -1,0 +1,12 @@
+//   if (!(user.accessLevel > 1)) throw new Error("Insufficient Access Level");
+        // if (type === "OTP" && otp) {
+        //     if (!user.otpAccess) {
+        //     throw new Error(`OTP Access is ${user.otpAccess}`);
+        //     }
+        //     if (new Date() > user.otpTimeout) {
+        //     throw new Error("OTP has expired");
+        //     }
+        //     if (!bcryptjs.compareSync(otp, `${user.otp}`)) {
+        //     throw new Error("Invalid OTP credentials.");
+        //     }
+        // } else
