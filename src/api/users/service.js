@@ -478,7 +478,7 @@ export const loginService = async (loginPayload) => {
    * @param {*} user Authorized bearer
    */
   // eslint-disable-next-line complexity
-  export async function securityService(wallet, pin, user) {
+export async function securityService(wallet, pin, user) {
     try {
       const UserFrom = await User.findOne({ wallet }).select("+pin").exec();
       if (!UserFrom) throw new Error(`Wallet with address ${wallet} not found.`);

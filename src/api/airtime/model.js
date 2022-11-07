@@ -9,6 +9,7 @@ export const validateCreate = joi.object({
     name: joi.string().trim().required(),
     shortName: joi.string().trim().required(),
     rate: joi.number().required(),
+    networkImage: joi.string().optional(),
     txnNetwork: joi.string().trim().required(),
     txnNetworkNumber: joi.string().trim().required(),
     paymentSteps: joi.array().items(
@@ -19,6 +20,25 @@ export const validateCreate = joi.object({
     ).optional(),
     paymentDescription: joi.string().optional(),
     createdBy: joi.string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .optional()
+})
+
+export const validateUpdate = joi.object({
+    name: joi.string().trim().optional(),
+    shortName: joi.string().trim().optional(),
+    rate: joi.number().optional(),
+    networkImage: joi.string().optional(),
+    txnNetwork: joi.string().trim().optional(),
+    txnNetworkNumber: joi.string().trim().optional(),
+    paymentSteps: joi.array().items(
+        joi.object({
+            title: joi.string().required(),
+            description: joi.string().required()
+        })
+    ).optional(),
+    paymentDescription: joi.string().optional(),
+    updatedBy: joi.string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional()
 })
