@@ -1,13 +1,18 @@
-
-import { fetchService } from './service';
+import { 
+    fetchService,
+    createService,
+    updateService,
+    deleteService
+} from "./service.js";
 import { fail, response, success } from "../../util/response";
 
+
 export const fetchHandler = async (req, res) => {
-    try{
+    try {
         const result = await fetchService(req.query);
-        return response(res, 200, result);
+        return response(res, 200, result)
     }catch (err) {
-        return fail(res, 400, `${err.message}`);
+        return fail(res, 400, `${err.message}`)
     }
 }
 

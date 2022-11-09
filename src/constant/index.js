@@ -180,6 +180,17 @@ export const AIRTIME = {
   },
 };
 
+export const GIFTCARD = {
+  STATUS: {
+    ACTIVE: 'ACTIVE',
+    DEACTIVATED: 'DEACTIVATED'
+  },
+  TYPE: {
+    PHYSICAL: 'PHYSICAL',
+    ECODE: 'ECODE'
+  }
+};
+
 
 export const COUNTRIES = {
   NG: 'NIGERIA',

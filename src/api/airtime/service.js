@@ -63,7 +63,7 @@ export const createService = async (data) => {
 
         data.code = await generateModelCode(Airtime);
         const creator = await Users.findById(data.createdBy).exec();
-        if (!creator) throw new Error(`Sender ${data.createdBy} not found`);
+        if (!creator) throw new Error(`User ${data.createdBy} not found`);
         data.createdBy = creator.id;
 
         const newRecord = new Airtime(data);

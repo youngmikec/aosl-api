@@ -1,10 +1,10 @@
 import aqp from "api-query-params";
 import Users from "../users/model";
-import Cryptocurrency, { validateCreate, validateUpdate } from "./model";
+import Giftcard, { validateCreate, validateUpdate } from "./model";
 import { generateModelCode, setLimit } from "../../util";
 import { uploadImage } from "../../services/upload";
 
-const module = 'Cryptocurrency';
+const module = 'Giftcard';
 
 export const fetchService = async (query) => {
     try {
@@ -14,7 +14,7 @@ export const fetchService = async (query) => {
             const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
             filter.$or = [
               { name: { $regex: new RegExp(searchString, "i") } },
-              { shortName: { $regex: new RegExp(searchString, "i") } },
+            //   { shortName: { $regex: new RegExp(searchString, "i") } },
               { $text: { $search: escaped, $caseSensitive: false } },
             ];
             delete filter.q;
@@ -23,9 +23,9 @@ export const fetchService = async (query) => {
         limit = setLimit(limit);
         if (!filter.deleted) filter.deleted = 0;
 
-        const total = await Cryptocurrency.countDocuments(filter).exec();
+        const total = await Giftcard.countDocuments(filter).exec();
 
-        const result = await Cryptocurrency.find(filter)
+        const result = await Giftcard.find(filter)
             .populate(population)
             .sort(sort)
             .limit(limit)
@@ -51,43 +51,29 @@ export const createService = async (data) => {
         if(error) throw new Error(`${error.message}`);
 
         const { name } = data;
-        let { cryptoImage, barcode, networks } = data;
-        if(cryptoImage){
-            const uploadResult = await uploadImage(cryptoImage);
-            data.cryptoImage = uploadResult.url;
+        let { giftcardImage } = data;
+        if(giftcardImage){
+            const uploadResult = await uploadImage(giftcardImage);
+            data.giftcardImage = uploadResult.url;
         }else {
-            console.log('no crypto image found');
+            console.log('no giftcard image found');
         }
-        if(barcode){
-            const uploadResult = await uploadImage(barcode);
-            data.barcode = uploadResult.url;
-        }else {
-            console.log('no barcode image found');
-        }
-
-        if(networks) {
-            const transformedItems = networks.map((item) => ({ networkName: item.name, networkId: generateCode(4)}))
-            if(transformedItems.length > 0) {
-                data.networks = transformedItems
-            }
-        }
-
-        const existingRecord = await Cryptocurrency.findOne({name: name}).exec();
+        const existingRecord = await Giftcard.findOne({name: name}).exec();
         if(existingRecord) throw new Error(`Record already exist`);
 
-        data.code = await generateModelCode(Cryptocurrency);
+        data.code = await generateModelCode(Giftcard);
         const creator = await Users.findById(data.createdBy).exec();
         if (!creator) throw new Error(`User ${data.createdBy} not found`);
         data.createdBy = creator.id;
 
-        const newRecord = new Cryptocurrency(data);
+        const newRecord = new Giftcard(data);
         const result = await newRecord.save();
         if(!result) throw new Error(`${module} record not found`);
 
         return result;
 
     }catch (err) {
-        throw new Error(`Error creating Cryptocurrency record. ${err.message}`);
+        throw new Error(`Error creating Airtime record. ${err.message}`);
     }
 }
 
@@ -98,33 +84,26 @@ export async function updateService(recordId, data, user) {
             throw new Error(`Invalid request. ${error.message}`);
         }
 
-        const returnedRecord = await Cryptocurrency.findById(recordId).exec();
+        const returnedRecord = await Giftcard.findById(recordId).exec();
         if (!returnedRecord) throw new Error(`${module} record not found.`);
         if (`${returnedRecord.createdBy}` !== user.id && (user.userType !== 'ADMIN' || 'EDITOR')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
-
-        let { cryptoImage, barcode } = data;
-        if(cryptoImage){
-            const uploadResult = await uploadImage(cryptoImage);
-            data.cryptoImage = uploadResult.url;
+        let { giftcardImage } = data;
+        if(giftcardImage){
+            const uploadResult = await uploadImage(giftcardImage);
+            data.giftcardImage = uploadResult.url;
         }else {
-            console.log('no crypto image found');
-        }
-        if(barcode){
-            const uploadResult = await uploadImage(barcode);
-            data.barcode = uploadResult.url;
-        }else {
-            console.log('no barcode image found');
+            console.log('no giftcard image found');
         }
       
-        const result = await Cryptocurrency.findOneAndUpdate({ _id: recordId }, data, {
-            new: true,
-        }).exec();
-        if (!result) {
-            throw new Error(`${module} record not found.`);
-        }
-        return result;
+      const result = await Giftcard.findOneAndUpdate({ _id: recordId }, data, {
+        new: true,
+      }).exec();
+      if (!result) {
+        throw new Error(`${module} record not found.`);
+      }
+      return result;
     } catch (err) {
       throw new Error(`Error updating ${module} record. ${err.message}`);
     }
@@ -133,12 +112,12 @@ export async function updateService(recordId, data, user) {
 
 export async function deleteService(recordId) {
     try {
-        const result = await Cryptocurrency.findOneAndRemove({ _id: recordId });
+        const result = await Giftcard.findOneAndRemove({ _id: recordId });
         if (!result) {
-            throw new Error(`Cryptocurrency record not found.`);
+            throw new Error(`Giftcard record not found.`);
         }
         return result;
     } catch (err) {
-        throw new Error(`Error deleting Cryptocurrency record. ${err.message}`);
+        throw new Error(`Error deleting Giftcard record. ${err.message}`);
     }
 }
