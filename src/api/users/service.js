@@ -199,7 +199,7 @@ export const loginService = async (loginPayload) => {
   const sendMailService = async (userEmail, subject, message) => {
     try{
       const result = await sendMail(
-        'michaelozor15@seafood.com',
+        'admin@chinoEx.com',
         userEmail,
         subject,
         message
@@ -227,26 +227,35 @@ export const loginService = async (loginPayload) => {
       data.code = generateCode(10);
       const newRecord = new Users(data);
       const result = await newRecord.save();
+
       if (!result) {
         throw new Error(`User record not found.`);
       }
 
-      // send mail to user upon successful account creation
-    //   const mailResponse = await sendMailService(
-    //     result.email,
-    //     'SeaWay Onboarding mail',
-    //     `
-    //     <p>
-    //       Dear customer ${result.surname || ''} ${result.firstName || ''}, welcome on board your account was created successfully.<br>
-    //       We are pleased to have you with us. Follow the link below to get started and enjoy unlimited, seamless, fastest delivery service you can ever imagine<br>
-    //       <a href="${process.env.FRONTEND_URL || 'http://localhost:4200/#/home' }" target="_blank">${process.env.FRONTEND_URL || 'http://localhost:4200/#/home' }</a><br>
-    //       Thank you for trusting us.
-    //     </p>
-    //     `
-    //   );
+      //send mail to user upon successful account creation
+      const mailResponse = await sendMailService(
+        result.email,
+        'Account Verification mail',
+        `
+        <p>
+          Dear customer ${result.firstName || ''} ${result.lastName || ''}, welcome on board your account was created successfully.<br>
+          We are pleased to have you with us. Your verification code is <b> ${ result.code } </b>
+          
+          Follow the link below to get started and enjoy unlimited, seamless service you can ever imagine<br>
+          <a href="${process.env.FRONTEND_VERIFY_URL || 'https://chinos-exchange.vercel.app/verify' }" target="_blank">${process.env.FRONTEND_VERIFY_URL || 'https://chinos-exchange.vercel.app/verify' }</a><br>
+          Thank you for trusting us.
+        </p>
+        `
+      ).then(res => {
+        console.log('mail sent successfully')
+      }).catch(err => {
+        console.log(err);
+      })
 
-    //   if(!mailResponse) console.error('error sending Email');
-    //   return { status: result.status };
+      
+      delete result.transactionPin;
+      delete result.code;
+
       return result;
     } catch (err) {
       throw new Error(`Error creating User record. ${err.message}`);
@@ -343,16 +352,17 @@ export const loginService = async (loginPayload) => {
               Dear customer ${user.firstName || ''} ${user.lastName || ''}, your password reset code is <strong>${resetCode}</strong>
             </p>
             <br>
-            <br>
             <p>
                 If you did not initiate this action pls ensure to secure your account and possibly contact support for further assistance.
             </p>
             `
-        );
-
-        if(!mailResponse) console.log('error sending reset code');
-
-        return { resetCode: resetCode, user: result };
+        ).then(res => {
+          console.log('mail sent successfully')
+        }).catch(err => {
+          console.log(err);
+        })
+        delete result.resetCode;
+        return result;
 
     } catch( err ) {
         throw new Error(`Error sending password rest code. ${err.message}`);
