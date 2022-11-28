@@ -51,12 +51,18 @@ export const createService = async (data) => {
         if(error) throw new Error(`${error.message}`);
 
         const { name } = data;
-        let { giftcardImage } = data;
+        let { giftcardImage, barcode } = data;
         if(giftcardImage){
             const uploadResult = await uploadImage(giftcardImage);
             data.giftcardImage = uploadResult.url;
         }else {
             console.log('no giftcard image found');
+        }
+        if(barcode){
+            const uploadResult = await uploadImage(barcode);
+            data.barcode = uploadResult.url;
+        }else {
+            console.log('no barcode image found');
         }
         const existingRecord = await Giftcard.findOne({name: name}).exec();
         if(existingRecord) throw new Error(`Record already exist`);
@@ -73,7 +79,7 @@ export const createService = async (data) => {
         return result;
 
     }catch (err) {
-        throw new Error(`Error creating Airtime record. ${err.message}`);
+        throw new Error(`Error creating Giftcard record. ${err.message}`);
     }
 }
 
@@ -89,12 +95,18 @@ export async function updateService(recordId, data, user) {
         if (`${returnedRecord.createdBy}` !== user.id && (user.userType !== 'ADMIN' || 'EDITOR')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
-        let { giftcardImage } = data;
+        let { giftcardImage, barcode } = data;
         if(giftcardImage){
             const uploadResult = await uploadImage(giftcardImage);
             data.giftcardImage = uploadResult.url;
         }else {
             console.log('no giftcard image found');
+        }
+        if(barcode){
+            const uploadResult = await uploadImage(barcode);
+            data.barcode = uploadResult.url;
+        }else {
+            console.log('no barcode image found');
         }
       
       const result = await Giftcard.findOneAndUpdate({ _id: recordId }, data, {

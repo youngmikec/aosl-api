@@ -1,14 +1,15 @@
-
 import { 
     fetchService,
     createService,
     updateService,
     deleteService,
-} from './service';
-import { fail, response, success } from "../../util/response";
+    updatePublicService
+} from "./service";
+import { fail, response, success } from "../../util/response"
+
 
 export const fetchHandler = async (req, res) => {
-    try{
+    try {  
         const result = await fetchService(req.query);
         return response(res, 200, result);
     }catch (err) {
@@ -25,10 +26,22 @@ export const createHandler = async (req, res) => {
     }
 }
 
+
 export const updateHandler = async (req, res) => {
     try {
         const { recordId } = req.params;
         const result = await updateService(recordId, req.body, req.user);
+        return success(res, 200, result);
+    } catch (err) {
+    //   loging(module, req, err);
+        return fail(res, 400, `${err.message}`);
+    }
+}
+
+export const updatePublicHandler = async (req, res) => {
+    try {
+        const { recordId } = req.params;
+        const result = await updatePublicService(recordId, req.body, req.user);
         return success(res, 200, result);
     } catch (err) {
     //   loging(module, req, err);
@@ -45,4 +58,3 @@ export const deleteHandler = async (req, res) => {
         return fail(res, 400, `${err.message}`);
     }
 }
-  

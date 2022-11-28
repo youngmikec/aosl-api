@@ -14,6 +14,27 @@ export const TRANSACTION = {
   TRANSFER: "T", // Spending within Ewallet System between Mechant and Cutsomer
 };
 
+export const ORDERS = {
+  TYPES: {
+    AIRTIME: 'AIRTIME',
+    GIFTCARD: 'GIFTCARD',
+    BUY_CRYPTO: 'BUY_CRYPTO',
+    SELL_CRYPTO: 'SELL_CRYPTO'
+  },
+  STATUS: {
+    PENDING: 'PENDING',
+    PROOFED: 'PROOFED',
+    APPROVED: 'APPROVED',
+    DECLINED: 'DECLINED',
+    COMPLETED: 'COMPLETED',
+    CANCLED: 'CANCLED'
+  },
+  PAYMENT_METHOD: {
+    BANK: 'BANK',
+    WALLET: 'WALLET'
+  }
+}
+
 export const PAYMENT = {
   GATEWAY: {
     PAYSTACK: "PAYSTACK",

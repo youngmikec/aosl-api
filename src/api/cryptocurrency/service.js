@@ -1,7 +1,7 @@
 import aqp from "api-query-params";
 import Users from "../users/model";
 import Cryptocurrency, { validateCreate, validateUpdate } from "./model";
-import { generateModelCode, setLimit } from "../../util";
+import { generateModelCode, generateCode, setLimit } from "../../util";
 import { uploadImage } from "../../services/upload";
 
 const module = 'Cryptocurrency';

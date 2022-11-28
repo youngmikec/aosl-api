@@ -362,6 +362,7 @@ export const loginService = async (loginPayload) => {
           console.log(err);
         })
         delete result.resetCode;
+        delete result.code;
         return result;
 
     } catch( err ) {

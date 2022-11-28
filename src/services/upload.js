@@ -1,4 +1,5 @@
 import cloudinary from '../config/cloudinary';
+const module = 'Upload'
 
 export const uploadImage = async (imagePath) => {
     const options = {
@@ -13,7 +14,7 @@ export const uploadImage = async (imagePath) => {
         const result = await cloudinary.uploader.upload(imagePath, options);
         return result;
     } catch (error) {
-        throw new Error(`${error}`);
+        throw new Error(`${module} Error! Try uploading another image`);
     }
 
     // let result;

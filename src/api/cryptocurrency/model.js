@@ -104,8 +104,8 @@ export const schema = {
     paymentDescription: { type: String },
     paymentSteps: { type: Array, default: [], select: true },
 
-    createdBy: { type: ObjectId, ref: "User", required: true, select: true },
-    updatedBy: { type: ObjectId, ref: "User", select: false },
+    createdBy: { type: ObjectId, ref: "Users", required: true, select: true },
+    updatedBy: { type: ObjectId, ref: "Users", select: false },
     deleted: { type: Boolean, default: false, select: false },
     deletedAt: { type: Date, select: false },
     deletedBy: { type: ObjectId, select: false },

@@ -8,61 +8,63 @@ const { ObjectId } = Schema.Types;
 
 
 export const validateCreate = joi.object({
-    // name: joi.string().trim().required(),
-    // shortName: joi.string().trim().required(),
-    // rate: joi.number().required(),
-    // cryptoImage: joi.string().optional(),
-    // barcode: joi.string().optional(),
-    // walletAddress: joi.string().trim().required(),
-    // bankName: joi.string().trim().required(),
-    // accountName: joi.string().trim().required(),
-    // accountNumber: joi.string().trim().required(),
-    // exchangePlatform: joi.string().trim().required(),
-    // networks: joi.array().items(
-    //     joi.object({
-    //         networkName: joi.string().required(),
-    //         networkId: joi.string().optional()
-    //     })
-    // ).optional(),
-    // paymentSteps: joi.array().items(
-    //     joi.object({
-    //         title: joi.string().required(),
-    //         description: joi.string().required()
-    //     })
-    // ).optional(),
-    // paymentDescription: joi.string().optional(),
-    // createdBy: joi.string()
-    // .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
-    // .optional()
+    name: joi.string().trim().required(),
+    shortName: joi.string().trim().required(),
+    type: joi.string().trim().valid(...Object.values(GIFTCARD.TYPE)).required(),
+    rate: joi.number().required(),
+    giftcardImage: joi.string().optional(),
+    barcode: joi.string().optional(),
+    walletAddress: joi.string().trim().required(),
+    bankName: joi.string().trim().required(),
+    accountName: joi.string().trim().required(),
+    accountNumber: joi.string().trim().required(),
+    exchangePlatform: joi.string().trim().required(),
+    networks: joi.array().items(
+        joi.object({
+            networkName: joi.string().required(),
+            networkId: joi.string().optional()
+        })
+    ).optional(),
+    paymentSteps: joi.array().items(
+        joi.object({
+            title: joi.string().required(),
+            description: joi.string().required()
+        })
+    ).optional(),
+    paymentDescription: joi.string().optional(),
+    createdBy: joi.string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .optional()
 })
 
 export const validateUpdate = joi.object({
-    // name: joi.string().trim().optional(),
-    // shortName: joi.string().trim().optional(),
-    // rate: joi.number().optional(),
-    // cryptoImage: joi.string().optional(),
-    // barcode: joi.string().optional(),
-    // walletAddress: joi.string().trim().optional(),
-    // bankName: joi.string().trim().optional(),
-    // accountName: joi.string().trim().optional(),
-    // accountNumber: joi.string().trim().optional(),
-    // exchangePlatform: joi.string().trim().optional(),
-    // networks: joi.array().items(
-    //     joi.object({
-    //         networkName: joi.string().required(),
-    //         networkId: joi.string().optional()
-    //     })
-    // ).optional(),
-    // paymentSteps: joi.array().items(
-    //     joi.object({
-    //         title: joi.string().required(),
-    //         description: joi.string().required()
-    //     })
-    // ).optional(),
-    // paymentDescription: joi.string().optional(),
-    // updatedBy: joi.string()
-    // .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
-    // .optional()
+    name: joi.string().trim().optional(),
+    shortName: joi.string().trim().optional(),
+    type: joi.string().trim().valid(...Object.values(GIFTCARD.TYPE)).optional(),
+    rate: joi.number().optional(),
+    giftcardImage: joi.string().optional(),
+    barcode: joi.string().optional(),
+    walletAddress: joi.string().trim().optional(),
+    bankName: joi.string().trim().optional(),
+    accountName: joi.string().trim().optional(),
+    accountNumber: joi.string().trim().optional(),
+    exchangePlatform: joi.string().trim().optional(),
+    networks: joi.array().items(
+        joi.object({
+            networkName: joi.string().required(),
+            networkId: joi.string().optional()
+        })
+    ).optional(),
+    paymentSteps: joi.array().items(
+        joi.object({
+            title: joi.string().required(),
+            description: joi.string().required()
+        })
+    ).optional(),
+    paymentDescription: joi.string().optional(),
+    updatedBy: joi.string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .optional()
 })
 
 
@@ -77,10 +79,14 @@ export const schema = {
         type: String, 
         select: true,
     },
+    barcode: { 
+        type: String, 
+        select: true,
+    },
     type: { 
         type: String, 
         enum: Object.values(GIFTCARD.TYPE),
-        default: 'DEACTIVATED', 
+        default: GIFTCARD.TYPE.PHYSICAL, 
         required: true, 
         select: true
     },
@@ -104,8 +110,8 @@ export const schema = {
     paymentDescription: { type: String },
     paymentSteps: { type: Array, default: [], select: true },
 
-    createdBy: { type: ObjectId, ref: "User", required: true, select: true },
-    updatedBy: { type: ObjectId, ref: "User", select: false },
+    createdBy: { type: ObjectId, ref: "Users", required: true, select: true },
+    updatedBy: { type: ObjectId, ref: "Users", select: false },
     deleted: { type: Boolean, default: false, select: false },
     deletedAt: { type: Date, select: false },
     deletedBy: { type: ObjectId, select: false },
