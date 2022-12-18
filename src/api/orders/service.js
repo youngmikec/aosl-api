@@ -62,7 +62,7 @@ export async function createService(data) {
         const senderObj = await Users.findById(data.createdBy).exec();
         if(!senderObj) throw new Error(`Cannot perform transaction, this user does not exist.`);
 
-        data.code = await generateModelCode(Orders);
+        data.orderCode = await generateModelCode(Orders);
         data.user = senderObj.id;
 
         const { proofImage } = data;

@@ -14,7 +14,8 @@ import { checkAuth, isValidAdmin } from '../../middleware';
 const router = express.Router();
 
 
-router.get('/cryptos', [checkAuth], fetchHandler);
+router.get('/cryptos/public', [checkAuth], fetchHandler);
+router.get('/cryptos', [checkAuth, isValidAdmin], fetchHandler);
 // router.get('/cryptos/public', fetchPublicHandler);
 
 // create cryptos

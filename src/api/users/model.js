@@ -90,7 +90,7 @@ export const schema = {
     verifiedDate: { type: Date },
     disengagedBy: { type: ObjectId },
     disengagedDate: { type: Date },
-    accessLevel: { type: Number, default: ACCESS_LEVEL.DELETE, min: 0, max: 10 },
+    accessLevel: { type: Number, default: ACCESS_LEVEL.DELETE, min: 0, max: 10, select: true },
     emailNotification: { type: Boolean, default: true },
     smsNotification: { type: Boolean, default: false },
     notifications: { type: Array, default: [] },
