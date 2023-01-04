@@ -3,6 +3,7 @@ import ordersRoute from './orders';
 import airtimeRoute from './airtime/index';
 import userRoute from './users/index.js';
 import giftcardRoute from './giftcard/index';
+import reportsRoute from './report/index.js';
 import cryptocurrencyRoute from './cryptocurrency/index';
 
 const router = express.Router();
@@ -10,6 +11,7 @@ const router = express.Router();
 router.use(userRoute);
 router.use(ordersRoute);
 router.use(airtimeRoute);
+router.use(reportsRoute);
 router.use(giftcardRoute);
 router.use(cryptocurrencyRoute);
 
