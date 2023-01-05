@@ -77,6 +77,20 @@ export const validateCreate = joi.object({
         then: joi.required(),
         otherwise: joi.forbidden(),
     }),
+    cardType: joi.string().trim().valid('PHYSICAL', 'ECODE')
+    .optional()
+    .when('orderType', {
+        is: ORDERS.TYPES.GIFTCARD,
+        then: joi.required(),
+        otherwise: joi.forbidden()
+    }),
+    cardNumber: joi.string().trim().min(10)
+    .optional()
+    .when('orderType', {
+        is: ORDERS.TYPES.GIFTCARD,
+        then: joi.required(),
+        otherwise: joi.forbidden()
+    }),
     // user: joi.string()
     // .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     // .required(),
