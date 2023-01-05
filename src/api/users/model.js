@@ -31,6 +31,12 @@ export const validateForgortPassword = joi.object({
     createdBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 })
 
+export const validateAdminUpdate = joi.object({
+    email: joi.string().email().optional(),
+    password: joi.string().trim().optional(),
+    updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+})
+
 export const validateLogin = joi.object({
     email: joi.string().email().required(),
     password: joi.string().required(),

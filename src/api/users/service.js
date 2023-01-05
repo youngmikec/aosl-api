@@ -394,7 +394,7 @@ export const loginService = async (loginPayload) => {
       const { error } = validateAdminUpdate.validate(data);
       if (error) throw new Error(`Error validating User data. ${error.message}`);
       if (safeGet(data, "password")) data.password = hash(data.password);
-      const result = await User.findOneAndUpdate({ _id: recordId }, data, {
+      const result = await Users.findOneAndUpdate({ _id: recordId }, data, {
         new: true,
       }).exec();
       if (!result) {

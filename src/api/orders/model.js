@@ -41,7 +41,6 @@ export const validateCreate = joi.object({
         otherwise: joi.forbidden(),
     }),
 
-
     airtime: joi.string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional()
@@ -55,16 +54,25 @@ export const validateCreate = joi.object({
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional()
     .when('orderType', {
-        is: ORDERS.TYPES.BUY_CRYPTO || ORDERS.TYPES.SELL_CRYPTO,
+        is: ORDERS.TYPES.BUY_CRYPTO,
+        then: joi.required(),
+        otherwise: joi.forbidden(),
+    })
+    .when('orderType', {
+        is: ORDERS.TYPES.SELL_CRYPTO,
         then: joi.required(),
         otherwise: joi.forbidden(),
     }),
 
     network: joi.string().trim()
-    // .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional()
     .when('orderType', {
-        is: ORDERS.TYPES.BUY_CRYPTO || ORDERS.TYPES.SELL_CRYPTO,
+        is: ORDERS.TYPES.BUY_CRYPTO,
+        then: joi.required(),
+        otherwise: joi.forbidden(),
+    })
+    .when('orderType', {
+        is: ORDERS.TYPES.SELL_CRYPTO,
         then: joi.required(),
         otherwise: joi.forbidden(),
     }),
@@ -98,7 +106,6 @@ export const validateCreate = joi.object({
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional()
 })
-
 
 
 export const validateUpdate = joi.object({
