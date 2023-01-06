@@ -56,6 +56,17 @@ export const validateCreate = joi.object({
     country: joi.string().valid(...Object.keys(COUNTRIES)).required()
 })
 
+export const validateUserUpdate = joi.object({
+    firstName: joi.string().trim().optional(),
+    lastName: joi.string().trim().optional(),
+    phone: joi.string().trim().optional(),
+    email: joi.string().email().optional(),
+    password: joi.string().optional(),
+    country: joi.string().valid(...Object.keys(COUNTRIES)).optional(),
+    profileImage: joi.string().trim().optional(),
+    updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+})
+
 export const schema = {
     userType: {
       type: String,
@@ -69,6 +80,7 @@ export const schema = {
     transactionPin: { type: String, default: "0000", select: false},
     firstName: { type: String, trim: true },
     lastName: { type: String, trim: true },
+    profileImage: { type: String, trim: true },
     gender: { type: String, enum: Object.values(GENDER) },
     // birthDate: { type: Date },
     address: { type: String },

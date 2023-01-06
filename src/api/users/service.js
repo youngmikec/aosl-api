@@ -124,8 +124,8 @@ export const loginService = async (loginPayload) => {
     try {
       const { projection, population } = aqp(query);
       const filter = { _id: safeGet(user, "id"), deleted: 0 };
-      const total = await User.countDocuments(filter).exec();
-      const result = await User.findOne(filter)
+      const total = await Users.countDocuments(filter).exec();
+      const result = await Users.findOne(filter)
         .populate(population)
         .select(projection)
         .exec();
@@ -375,7 +375,15 @@ export const loginService = async (loginPayload) => {
       const { error } = validateUserUpdate.validate(data);
       if (error) throw new Error(`Error validating User data. ${error.message}`);
       if (safeGet(data, "password")) data.password = hash(data.password);
-      const user = await User.findOneAndUpdate({ _id: recordId }, data, {
+      const { profileImage } = data;
+        if(profileImage){
+          const uploadResult = await uploadImage(profileImage);
+          data.profileImage = uploadResult.url;
+      }else {
+          console.log('no profileImage image found');
+      }
+
+      const user = await Users.findOneAndUpdate({ _id: recordId }, data, {
         new: true,
       }).exec();
       if (!user) {
