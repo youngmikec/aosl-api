@@ -80,7 +80,7 @@ export const schema = {
     transactionPin: { type: String, default: "0000", select: false},
     firstName: { type: String, trim: true },
     lastName: { type: String, trim: true },
-    profileImage: { type: String, trim: true },
+    profileImage: { type: String, trim: true, select: true },
     gender: { type: String, enum: Object.values(GENDER) },
     // birthDate: { type: Date },
     address: { type: String },

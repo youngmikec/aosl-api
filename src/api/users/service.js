@@ -2,7 +2,6 @@ import aqp from "api-query-params";
 import dotenv from 'dotenv';
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import moment from "moment";
 import Users, {
   validateCreate,
   validateAdminUpdate,
@@ -16,6 +15,7 @@ import Users, {
 import { generateCode, hash, safeGet, setLimit, generateOtp } from "../../util/helpers.js";
 import { JWT, USER_TYPE } from "../../constant/index.js";
 import { sendMail } from "../../services/index.js";
+import { uploadImage } from "../../services/upload.js";
 
 dotenv.config();
 const module = "Users";
