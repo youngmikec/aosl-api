@@ -72,7 +72,7 @@ export const createService = async (data) => {
             data.subject,
             data.message
         ).then(res => {
-            console.log('mail sent successfully')
+            console.log('mail sent successfully');
         }).catch(err => {
             console.log(err);
         })

@@ -65,12 +65,12 @@ export const createService = async (data) => {
             console.log('no barcode image found');
         }
 
-        if(networks) {
-            const transformedItems = networks.map((item) => ({ networkName: item.name, networkId: generateCode(4)}))
-            if(transformedItems.length > 0) {
-                data.networks = transformedItems
-            }
-        }
+        // if(networks) {
+        //     const transformedItems = networks.map((item) => ({ networkName: item.name, networkId: generateCode(4)}))
+        //     if(transformedItems.length > 0) {
+        //         data.networks = transformedItems
+        //     }
+        // }
 
         const existingRecord = await Cryptocurrency.findOne({name: name}).exec();
         if(existingRecord) throw new Error(`Record already exist`);
