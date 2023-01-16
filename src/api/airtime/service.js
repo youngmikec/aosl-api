@@ -1,8 +1,8 @@
 import aqp from "api-query-params";
-import Users from "../users/model";
-import Airtime, { validateCreate, validateUpdate } from "./model";
-import { generateModelCode, setLimit } from "../../util";
-import { uploadImage } from "../../services/upload";
+import Users from "../users/model.js";
+import Airtime, { validateCreate, validateUpdate } from "./model.js";
+import { generateModelCode, setLimit } from "../../util/index.js";
+import { uploadImage } from "../../services/upload.js";
 
 const module = 'Airtime';
 

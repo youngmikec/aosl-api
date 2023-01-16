@@ -1,11 +1,11 @@
 import express from 'express';
-import ordersRoute from './orders';
-import airtimeRoute from './airtime/index';
+import ordersRoute from './orders/index.js';
+import airtimeRoute from './airtime/index.js';
 import userRoute from './users/index.js';
-import giftcardRoute from './giftcard/index';
-import mailsRoute from './mail/index';
+import giftcardRoute from './giftcard/index.js';
+import mailsRoute from './mail/index.js';
 import reportsRoute from './report/index.js';
-import cryptocurrencyRoute from './cryptocurrency/index';
+import cryptocurrencyRoute from './cryptocurrency/index.js';
 
 const router = express.Router();
 

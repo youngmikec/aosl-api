@@ -1,6 +1,6 @@
 import joi from 'joi';
 import mongoose from 'mongoose';
-import { AIRTIME, DATABASE } from '../../constant/index';
+import { AIRTIME, DATABASE } from '../../constant/index.js';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;

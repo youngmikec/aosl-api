@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import joi from 'joi';
-import { DATABASE, ORDERS } from '../../constant';
+import { DATABASE, ORDERS } from '../../constant/index.js';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;

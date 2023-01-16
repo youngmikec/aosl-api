@@ -1,9 +1,7 @@
 import aqp from "api-query-params";
-import Users from "../users/model";
-import Mails, { validateCreate, validateUpdate } from "./model";
-import { generateModelCode, setLimit } from "../../util";
-import { uploadImage } from "../../services/upload";
-import { sendMail } from "../../services";
+import Mails, { validateCreate, validateUpdate } from "./model.js";
+import { generateModelCode, setLimit } from "../../util/index.js";
+import { sendMail } from "../../services/index.js";
 
 const module = 'Mails';
 

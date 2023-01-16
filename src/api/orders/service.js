@@ -1,12 +1,12 @@
 import aqp from "api-query-params";
-import { uploadImage } from "../../services/upload";
-import { generateModelCode, setLimit } from "../../util";
-import Users from "../users/model";
+import { uploadImage } from "../../services/upload.js";
+import { generateModelCode, setLimit } from "../../util/index.js";
+import Users from "../users/model.js";
 import Orders, {
     validateCreate,
     validateUpdate,
     validatePublicUpdate
-} from './model';
+} from './model.js';
 
 const module = 'Orders';
 

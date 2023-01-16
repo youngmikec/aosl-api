@@ -5,8 +5,8 @@ import {
     updateHandler,
     deleteHandler,
     updatePublicHandler,
-} from './controller';
-import { checkAuth, isValidAdmin } from '../../middleware';
+} from './controller.js';
+import { checkAuth, isValidAdmin } from '../../middleware/index.js';
 
 
 const router = express.Router();

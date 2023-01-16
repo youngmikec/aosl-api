@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import helmet from 'helmet';
 
-import appApi from "./api/index";
+import appApi from "./api/index.js";
 import database from "./config/index.js";
 
 // CORS options

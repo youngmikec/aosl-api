@@ -2,13 +2,12 @@ import express from 'express';
 
 import { 
     fetchHandler,
-    fetchPublicHandler,
     createHandler,
     updateHandler,
     deleteHandler,
-} from './controller';
+} from './controller.js';
 
-import { checkAuth, isValidAdmin } from '../../middleware';
+import { checkAuth, isValidAdmin } from '../../middleware/index.js';
 
 
 const router = express.Router();

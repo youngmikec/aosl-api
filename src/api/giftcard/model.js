@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import joi from 'joi';
-import { DATABASE, GIFTCARD } from '../../constant';
+import { DATABASE, GIFTCARD } from '../../constant/index.js';
 
 
 const { Schema } = mongoose;

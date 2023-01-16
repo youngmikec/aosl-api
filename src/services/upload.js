@@ -1,4 +1,4 @@
-import cloudinary from '../config/cloudinary';
+import cloudinary from '../config/cloudinary.js';
 const module = 'Upload'
 
 export const uploadImage = async (imagePath) => {

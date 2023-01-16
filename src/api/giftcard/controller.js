@@ -4,7 +4,7 @@ import {
     updateService,
     deleteService
 } from "./service.js";
-import { fail, response, success } from "../../util/response";
+import { fail, response, success } from "../../util/response.js";
 
 
 export const fetchHandler = async (req, res) => {
