@@ -19,10 +19,10 @@ export const validateCreate = joi.object({
     accountName: joi.string().trim().required(),
     accountNumber: joi.string().trim().required(),
     exchangePlatform: joi.string().trim().required(),
-    networks: joi.array().items(
+    currencies: joi.array().items(
         joi.object({
-            networkName: joi.string().required(),
-            networkId: joi.string().optional()
+            rate: joi.number().required(),
+            name: joi.string().optional()
         })
     ).optional(),
     paymentSteps: joi.array().items(
@@ -49,10 +49,10 @@ export const validateUpdate = joi.object({
     accountName: joi.string().trim().optional(),
     accountNumber: joi.string().trim().optional(),
     exchangePlatform: joi.string().trim().optional(),
-    networks: joi.array().items(
+    currencies: joi.array().items(
         joi.object({
-            networkName: joi.string().required(),
-            networkId: joi.string().optional()
+            rate: joi.number().required(),
+            name: joi.string().optional()
         })
     ).optional(),
     paymentSteps: joi.array().items(
