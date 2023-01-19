@@ -109,7 +109,7 @@ export const validateCreate = joi.object({
 
 
 export const validateUpdate = joi.object({
-    orderType: joi.string().trim().valid(...Object.values(ORDERS.TYPES)).required(),
+    orderType: joi.string().trim().valid(...Object.values(ORDERS.TYPES)).optional(),
     sendersPhone: joi.string().trim().optional()
     .when('orderType', {
         is: ORDERS.TYPES.AIRTIME,
@@ -148,7 +148,9 @@ export const validateUpdate = joi.object({
         then: joi.required(),
         otherwise: joi.forbidden(),
     }),
-
+    status: joi.string().trim()
+    .valid(...Object.values(ORDERS.STATUS))
+    .optional(),
 
     airtime: joi.string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")

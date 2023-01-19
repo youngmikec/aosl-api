@@ -99,9 +99,7 @@ export async function updateService(recordId, data, user) {
 
         const returnedRecord = await Orders.findById(recordId).exec();
         if (!returnedRecord) throw new Error(`${module} record not found.`);
-        if (`${returnedRecord.createdBy}` !== user.id && (user.userType !== 'ADMIN' || 'EDITOR')) {
-            throw new Error(`user ${user.email} does not have the permission to update`);
-        }
+        
         let { proofImage } = data;
         if(proofImage){
             const uploadResult = await uploadImage(proofImage);
