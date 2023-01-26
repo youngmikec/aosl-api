@@ -242,7 +242,7 @@ export const loginService = async (loginPayload) => {
           We are pleased to have you with us. Your verification code is <b> ${ result.code } </b>
           
           Follow the link below to get started and enjoy unlimited, seamless service you can ever imagine<br>
-          <a href="${process.env.FRONTEND_VERIFY_URL || 'https://chinos-exchange.vercel.app/verify' }" target="_blank">${process.env.FRONTEND_VERIFY_URL || 'https://chinos-exchange.vercel.app/verify' }</a><br>
+          <a href="${`${process.env.FRONTEND_VERIFY_URL}/${result.code}`}" target="_blank">${`${process.env.FRONTEND_VERIFY_URL}/${result.code}`}</a><br>
           Thank you for trusting us.
         </p>
         `
@@ -268,13 +268,13 @@ export const loginService = async (loginPayload) => {
         if (error) throw new Error(`Error verifying email. ${error.message}`);
 
         const { id, code } = data;
-        const user = await Users.findOne({_id: id}).exec();
+        const user = await Users.findOne({ code }).exec();
         if(!user) throw new Error(`User does not exist`);
         if(code !== user.code) throw new Error(`Error verifying email. Verification code mismatch`);
 
         const payload = { isVerified: true };
-        const result = await Users.findOneAndUpdate({_id: id}, {...payload}, { new: true}).exec();
-        if(!result) throw new Error(`${module} Error verifying Email`);
+        const result = await Users.findOneAndUpdate({ code }, {...payload}, { new: true}).exec();
+        if(!result) throw new Error(`Error verifying Email`);
 
         return result;
 
