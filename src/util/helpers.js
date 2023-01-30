@@ -31,7 +31,7 @@ export function getLoginType(data) {
  * @param {string} baseId is the base ObjectId for that collection
  */
 export function generateObjectId(serial, baseId = "5c51bc91860d8b5bc0000001") {
-  const str = baseId.slice(0, 24 - (`${serial}`).length);
+  const str = baseId.slice(0, 24 - `${serial}`.length);
   return `${str}${serial}`;
 }
 
@@ -42,6 +42,8 @@ export function setLimit(inputlimit) {
     ? 100
     : limit;
 }
+
+export const returnCrypto = (name) => (name.includes("CRYPTO") ? "CRYPTO" : "");
 
 export function timestamp() {
   return `${new Date().toISOString().slice(0, 22)}Z`;
@@ -283,14 +285,15 @@ export function titleCase(str) {
     .join(" ");
 }
 
-export const slugit = (str) => slugify(str, {
-  replacement: '-',  // replace spaces with replacement character, defaults to `-`
-  remove: /[*+~.,()'"!:@]/g, // remove characters that match regex, defaults to `undefined`
-  lower: true,      // convert to lower case, defaults to `false`
-  strict: true,     // strip special characters except replacement, defaults to `false`
-  locale: 'en',       // language code of the locale to use
-  trim: true         // trim leading and trailing replacement chars, defaults to `true`
-});
+export const slugit = (str) =>
+  slugify(str, {
+    replacement: "-", // replace spaces with replacement character, defaults to `-`
+    remove: /[*+~.,()'"!:@]/g, // remove characters that match regex, defaults to `undefined`
+    lower: true, // convert to lower case, defaults to `false`
+    strict: true, // strip special characters except replacement, defaults to `false`
+    locale: "en", // language code of the locale to use
+    trim: true, // trim leading and trailing replacement chars, defaults to `true`
+  });
 
 // eslint-disable-next-line complexity
 export function calcTax(taxableIncome) {
@@ -352,7 +355,7 @@ export function getDistanceFromLatLonInKm(point1, point2) {
       Math.sqrt(squarehalfChordLength),
       Math.sqrt(1 - squarehalfChordLength)
     );
-    return earthRadius * angularDistance;
+  return earthRadius * angularDistance;
 }
 
 export function distanceCalc(lat1, lon1, lat2, lon2, unit) {
@@ -382,14 +385,13 @@ export function distanceCalc(lat1, lon1, lat2, lon2, unit) {
   }
 }
 
-
 /**
- * 
+ *
  * @param {Array} pointFrom coordinate of origin in [long1, lat1]
  * @param {Array} pointTo coordinate of destination in [long1, lat1]
  * @returns {number} Distance in Km
  */
- export function calculateDistance(pointFrom, pointTo) {
+export function calculateDistance(pointFrom, pointTo) {
   let [long1, lat1] = pointFrom;
   let [long2, lat2] = pointTo;
   //radians
