@@ -41,7 +41,7 @@ export const schema = {
   title: { type: String, trim: true, required: true },
   subject: { type: String, trim: true },
   message: { type: String, trim: true },
-  status: { type: String, default: "PENDING", select: true },
+  status: { type: String, default: "PUBLISHED", select: true },
   subscribers: { type: Array, select: true, required: true },
 
   createdAt: { type: Date, select: true },

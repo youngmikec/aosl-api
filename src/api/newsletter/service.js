@@ -104,7 +104,7 @@ export const createService = async (data) => {
     if (error) throw new Error(`${error.message}`);
 
     const existingRecord = await Newsletter.findOne({
-      title: data.title,
+      code: data.code,
     }).exec();
     if (existingRecord) throw new Error(`Record already exist`);
 
@@ -115,18 +115,22 @@ export const createService = async (data) => {
     const mappedSubscirbers = subscribers.map((item) => item.subscriberEmail);
     data.subscribers = mappedSubscirbers;
 
-    //send mail to subscribers
-    const mailResponse = await sendMailService(
-      mappedSubscirbers.toString(),
-      data.subject,
-      data.message
-    )
-      .then((res) => {
-        console.log("mail sent successfully");
+    const resolved = Promise.all(
+      mappedSubscirbers.map(async (item) => {
+        //send mail to subscribers
+        const mailResponse = await sendMailService(
+          item,
+          data.subject,
+          data.message
+        )
+          .then((res) => {
+            console.log("mail sent successfully");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+    );
 
     data.code = await generateModelCode(Newsletter);
     const creator = await Users.findById(data.createdBy).exec();
@@ -150,6 +154,34 @@ export async function updateService(recordId, data, user) {
       throw new Error(`Invalid request. ${error.message}`);
     }
 
+    const { status } = data;
+
+    if (status === "PUBLISHED") {
+      const subscribers = await Subscribers.find({}).exec();
+      if (subscribers.length < 1) {
+        throw new Error(`Subscribers not found`);
+      }
+      const mappedSubscirbers = subscribers.map((item) => item.subscriberEmail);
+      data.subscribers = mappedSubscirbers;
+
+      const resolved = Promise.all(
+        mappedSubscirbers.map(async (item) => {
+          //send mail to subscribers
+          const mailResponse = await sendMailService(
+            item,
+            data.subject,
+            data.message
+          )
+            .then((res) => {
+              console.log("mail sent successfully");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+      );
+    }
+
     const returnedNewsletter = await Newsletter.findById(recordId).exec();
     if (!returnedNewsletter) throw new Error(`${module} record not found.`);
     if (
@@ -159,13 +191,6 @@ export async function updateService(recordId, data, user) {
       throw new Error(
         `user ${user.email} does not have the permission to update`
       );
-    }
-    const { networkImage } = data;
-    if (networkImage) {
-      const uploadResult = await uploadImage(networkImage);
-      data.networkImage = uploadResult.url;
-    } else {
-      console.log("no network image found");
     }
 
     const result = await Newsletter.findOneAndUpdate({ _id: recordId }, data, {
