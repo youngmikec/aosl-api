@@ -16,24 +16,24 @@ export const TRANSACTION = {
 
 export const ORDERS = {
   TYPES: {
-    AIRTIME: 'AIRTIME',
-    GIFTCARD: 'GIFTCARD',
-    BUY_CRYPTO: 'BUY_CRYPTO',
-    SELL_CRYPTO: 'SELL_CRYPTO'
+    AIRTIME: "AIRTIME",
+    GIFTCARD: "GIFTCARD",
+    BUY_CRYPTO: "BUY_CRYPTO",
+    SELL_CRYPTO: "SELL_CRYPTO",
   },
   STATUS: {
-    PENDING: 'PENDING',
-    PROOFED: 'PROOFED',
-    APPROVED: 'APPROVED',
-    DECLINED: 'DECLINED',
-    COMPLETED: 'COMPLETED',
-    CANCLED: 'CANCLED'
+    PENDING: "PENDING",
+    PROOFED: "PROOFED",
+    APPROVED: "APPROVED",
+    DECLINED: "DECLINED",
+    COMPLETED: "COMPLETED",
+    CANCLED: "CANCLED",
   },
   PAYMENT_METHOD: {
-    BANK: 'BANK',
-    WALLET: 'WALLET'
-  }
-}
+    BANK: "BANK",
+    WALLET: "WALLET",
+  },
+};
 
 export const PAYMENT = {
   GATEWAY: {
@@ -61,9 +61,9 @@ export const WALLET = {
     PENDING: "PENDING",
     APPROVED: "APPROVED",
     BLOCKED: "BLOCKED",
-    DELETED: "DELETED"
-  }
-}
+    DELETED: "DELETED",
+  },
+};
 
 export const EMAIL = {
   ADMIN: "freexittechnologies@gmail.com",
@@ -80,16 +80,16 @@ export const GENDER = {
 };
 
 export const COVERAGE = {
-  GLOBAL:   1,
-  COUNTRY:  2,
-  REGION:   3,
+  GLOBAL: 1,
+  COUNTRY: 2,
+  REGION: 3,
 };
 
 export const USER_ROLE = {
-  OWNER:    1,
-  ADMIN:    2,
-  SUPPORT:  3,
-  USER:     4,
+  OWNER: 1,
+  ADMIN: 2,
+  SUPPORT: 3,
+  USER: 4,
 };
 
 export const USER_TYPE = {
@@ -98,18 +98,17 @@ export const USER_TYPE = {
   ADMIN: "ADMIN",
 };
 
-
 export const ACCESS_LEVEL = {
-  BLOCKED:    0,
-  LOGIN:      1,
-  READ:       2,
-  CREATE:     3,
-  UPDATE:     4,
-  DELETE:     5,
+  BLOCKED: 0,
+  LOGIN: 1,
+  READ: 2,
+  CREATE: 3,
+  UPDATE: 4,
+  DELETE: 5,
   ASSIGNMENT: 6,
-  SCHEDULE:   7,
-  TRANSFER:   8,
-  WITHDRAW:   9,
+  SCHEDULE: 7,
+  TRANSFER: 8,
+  WITHDRAW: 9,
 };
 
 export const BUCKET = {
@@ -158,17 +157,17 @@ export const DATABASE = {
 };
 
 export const ENTITY = {
-  USERS:       'Users',
-  CRYPTOCURRENCY: 'Cryptocurrency',
-  AIRTIME:        'Airtime',
-  GIFTCARD:       'Giftcard',
-  NEWSLETTER:     'Newsletter',
-  ORDERS:         'Orders'
+  USERS: "Users",
+  CRYPTOCURRENCY: "Cryptocurrency",
+  AIRTIME: "Airtime",
+  GIFTCARD: "Giftcard",
+  NEWSLETTER: "Newsletter",
+  ORDERS: "Orders",
 };
 export const JWT = {
   saltRounds: 2,
   jwtSecret: "chinos_app-investment_world-pays",
-  tokenExpireTime: "72h",
+  tokenExpireTime: "1h",
 };
 
 export const SMS = {
@@ -196,27 +195,25 @@ export const INPUT_TYPE = {
 
 export const AIRTIME = {
   STATUS: {
-    ACTIVE: 'ACTIVE',
-    DEACTIVATED: 'DEACTIVATED'
+    ACTIVE: "ACTIVE",
+    DEACTIVATED: "DEACTIVATED",
   },
 };
 
 export const GIFTCARD = {
   STATUS: {
-    ACTIVE: 'ACTIVE',
-    DEACTIVATED: 'DEACTIVATED'
+    ACTIVE: "ACTIVE",
+    DEACTIVATED: "DEACTIVATED",
   },
   TYPE: {
-    PHYSICAL: 'PHYSICAL',
-    ECODE: 'ECODE'
-  }
+    PHYSICAL: "PHYSICAL",
+    ECODE: "ECODE",
+  },
 };
 
-
 export const COUNTRIES = {
-  NG: 'NIGERIA',
-  GH: 'GHANA',
-}
-
+  NG: "NIGERIA",
+  GH: "GHANA",
+};
 
 export * from "./env-constant.js";
