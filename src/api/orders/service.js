@@ -104,7 +104,7 @@ export async function createService(data) {
       `
         <p>
           Dear customer, your order has been created successfully with the order code is <b> ${
-            result.code
+            result.orderCode
           } </b>
           
           <br>
@@ -131,7 +131,7 @@ export async function createService(data) {
       `
         <p>
           Dear Chino, An order has been created successfully with the order code is <b> ${
-            result.code
+            result.orderCode
           } </b>
           
           <br>
