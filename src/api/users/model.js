@@ -14,7 +14,7 @@ const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 export const validateVerifyEmail = joi.object({
-    code: joi.string().min(10).max(10).trim().required(),
+    code: joi.string().min(10).min(5).max(5).trim().required(),
     email: joi.string().email().optional()
 })
 

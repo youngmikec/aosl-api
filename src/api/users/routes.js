@@ -24,6 +24,7 @@ const router = express.Router();
 
 router.get("/users", [checkAuth, isValidAdmin], fetchHandler);
 router.get("/users/resetCode/:email", resetCodeHandler);
+// router.get('/user/resend-vcode', resendCodeHandler);
 
 router.get("/users/me", [checkAuth], fetchSelfHandler);
 

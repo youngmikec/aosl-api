@@ -1,5 +1,6 @@
 import aqp from "api-query-params";
 import { uploadImage } from "../../services/upload.js";
+import { sendMail } from "../../services/index.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import Users from "../users/model.js";
 import Orders, {
@@ -51,6 +52,20 @@ export const fetchService = async (query) => {
   }
 };
 
+
+const sendMailService = async (userEmail, subject, message) => {
+  try {
+    const result = await sendMail(
+      "admin@chinosexchange.com",
+      userEmail,
+      subject,
+      message
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export async function createService(data) {
   const session = await Orders.startSession();
   session.startTransaction({
@@ -81,6 +96,60 @@ export async function createService(data) {
     const result = await newOrder.save();
 
     if (!result) throw new Error(`${module} record not found.`);
+
+    //send mail to user upon successful order creation
+    const mailResponse = await sendMailService(
+      senderObj.email,
+      "Order Confirmation Mail",
+      `
+        <p>
+          Dear customer, your order has been created successfully with the order code is <b> ${
+            result.code
+          } </b>
+          
+          <br>
+          Your order will be processed as soon as possible. Click on the link below to chat with our admin in case of any issue.
+          <br/>
+          <br/>
+          <a href="https://wa.me/2347031625759" target="_blank">Chat with Admin</a>
+          <br>
+          Thank you for trusting us.
+        </p>
+        `
+    )
+    .then((res) => {
+      console.log("mail sent successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    //send mail to user upon successful order creation
+    const adminMailResponse = await sendMailService(
+      ["Chukwudeme0@gmail.com", "admin@chinosexchange.com"],
+      "Order Confirmation Mail",
+      `
+        <p>
+          Dear Chino, An order has been created successfully with the order code is <b> ${
+            result.code
+          } </b>
+          
+          <br>
+          Pls kindly fulfill this order. Click on the link below to chat with the user in case of any issue.
+          <br/>
+          <br/>
+          <a href="https://wa.me/+234${senderObj.phone}" target="_blank">Chat with User</a>
+          <br>
+          Thank you for trusting us.
+        </p>
+        `
+    )
+    .then((res) => {
+      console.log("mail sent successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
     session.commitTransaction();
     session.endSession();

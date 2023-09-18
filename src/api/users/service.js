@@ -236,7 +236,7 @@ export async function createService(data) {
       throw new Error(`Error! Record already exist for email ${email}`);
     }
     if (safeGet(data, "password")) data.password = hash(data.password);
-    data.code = generateCode(10);
+    data.code = generateCode(10).slice(0, 5);
     const newRecord = new Users(data);
     const result = await newRecord.save();
 
@@ -263,12 +263,12 @@ export async function createService(data) {
         </p>
         `
     )
-      .then((res) => {
-        console.log("mail sent successfully");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    .then((res) => {
+      console.log("mail sent successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
     delete result.transactionPin;
     delete result.code;
