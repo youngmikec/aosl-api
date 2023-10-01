@@ -104,6 +104,10 @@ export const loginService = async (loginPayload) => {
       throw new Error("Wrong password.");
     }
 
+    if(!user.isVerified){
+      throw new Error("Account not verifed!");
+    }
+
     const update = {
       otpAccess: false,
       currentLogin: Date.now(),
