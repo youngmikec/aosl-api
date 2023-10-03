@@ -98,37 +98,10 @@ export async function createService(data) {
 
     if (!result) throw new Error(`${module} record not found.`);
 
-    //send mail to user upon successful order creation
-    // const mailResponse = await sendMailService(
-    //   userObj.email,
-    //   "Order Confirmation Mail",
-    //   `
-    //     <p>
-    //       Dear customer, your order has been created successfully with the order code is <b> ${
-    //         result.orderCode
-    //       } </b>
-          
-    //       <br>
-    //       Your order will be processed as soon as possible. Click on the link below to chat with our admin in case of any issue.
-    //       <br/>
-    //       <br/>
-    //       <a href="https://wa.me/2347031625759" target="_blank">Chat with Admin</a>
-    //       <br>
-    //       Thank you for trusting us.
-    //     </p>
-    //     `
-    // )
-    // .then((res) => {
-    //   console.log("mail sent successfully");
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
-
     const mailResponse = await sendMailService(
       userObj.email,
       "Order Confirmation Mail",
-      orderEmailTemplate(result, userObj)
+      orderEmailTemplate(result, userObj, false)
     )
     .then((res) => {
       console.log("mail sent successfully");
@@ -141,7 +114,7 @@ export async function createService(data) {
     const adminMailResponse = await sendMailService(
       ["Chukwudeme0@gmail.com", "admin@chinosexchange.com", "michaelozor15@gmail.com"],
       "Order Confirmation Mail",
-      orderEmailTemplate(result, userObj)
+      orderEmailTemplate(result, userObj, true)
     )
     .then((res) => {
       console.log("mail sent successfully");

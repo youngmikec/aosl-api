@@ -167,7 +167,8 @@ export const ENTITY = {
 export const JWT = {
   saltRounds: 2,
   jwtSecret: "chinos_app-investment_world-pays",
-  tokenExpireTime: "1h",
+  tokenExpireTime: "30m",
+  adminTokenExpirationTime: '3h'
 };
 
 export const SMS = {
@@ -217,3 +218,4 @@ export const COUNTRIES = {
 };
 
 export * from "./env-constant.js";
+export * from './email-templates.js';

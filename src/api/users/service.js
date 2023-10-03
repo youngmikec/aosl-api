@@ -22,6 +22,7 @@ import {
 import { JWT, USER_TYPE } from "../../constant/index.js";
 import { sendMail } from "../../services/index.js";
 import { uploadImage } from "../../services/upload.js";
+import { verificationEmail } from '../../constant/email-templates.js'
 
 dotenv.config();
 const module = "Users";
@@ -128,7 +129,7 @@ export const loginService = async (loginPayload) => {
       userType: user.userType,
     };
     const token = jwt.sign(payload, JWT.jwtSecret, {
-      expiresIn: JWT.tokenExpireTime,
+      expiresIn: userType === USER_TYPE.ADMIN ? JWT.adminTokenExpirationTime : JWT.tokenExpireTime,
     });
     return { token, user };
   } catch (err) {
@@ -252,20 +253,7 @@ export async function createService(data) {
     const mailResponse = await sendMailService(
       result.email,
       "Account Verification mail",
-      `
-        <p>
-          Dear customer ${result.firstName || ""} ${
-        result.lastName || ""
-      }, welcome on board your account was created successfully.<br>
-          We are pleased to have you with us. Your verification code is <b> ${
-            result.code
-          } </b>
-          
-          Follow the link below to get started and enjoy unlimited, seamless service you can ever imagine<br>
-          <a href="${`${process.env.FRONTEND_VERIFY_URL}/${result.code}`}" target="_blank">${`${process.env.FRONTEND_VERIFY_URL}/${result.code}`}</a><br>
-          Thank you for trusting us.
-        </p>
-        `
+      verificationEmail(result)
     )
     .then((res) => {
       console.log("mail sent successfully");
@@ -383,16 +371,14 @@ export const passwordResetCodeService = async (email) => {
       email,
       "Chinos Password Reset Code",
       `
-            <p>
-              Dear customer ${user.firstName || ""} ${
-        user.lastName || ""
-      }, your password reset code is <strong>${resetCode}</strong>
-            </p>
-            <br>
-            <p>
-                If you did not initiate this action pls ensure to secure your account and possibly contact support for further assistance.
-            </p>
-            `
+        <p>
+          Dear customer ${user.firstName || ""} ${ user.lastName || "" }, your password reset code is <strong>${resetCode}</strong>
+        </p>
+        <br>
+        <p>
+            If you did not initiate this action pls ensure to secure your account and possibly contact support for further assistance.
+        </p>
+      `
     )
       .then((res) => {
         console.log("mail sent successfully");

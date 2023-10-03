@@ -29,7 +29,7 @@ export function getToken(req) {
 export const decodeToken = async (token) => {
   return new Promise(function (resolve, reject) {
     verify(token, JWT.jwtSecret, async (err, decoded) => {
-      if (err) reject(new Error("Invalid token"));
+      if (err) reject(new Error("Invalid token Or Session expired"));
       resolve(decoded);
     });
   });

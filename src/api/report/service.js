@@ -53,7 +53,6 @@ export const fethUserReportService = async (userId) => {
 
         let { limit } = aqp();
         limit = setLimit(10);
-        console.log('userId', userId);
         const totalOrders = await Orders.countDocuments({createdBy: userId}).exec();
         const pendingOrders = await Orders.countDocuments({status: 'PROOFED', user: userId, deleted: 0}).exec();
         const declinedOrders = await Orders.countDocuments({status: 'DECLINED', user: userId, deleted: 0}).exec();
