@@ -8,6 +8,7 @@ import Orders, {
   validateUpdate,
   validatePublicUpdate,
 } from "./model.js";
+import { orderEmailTemplate } from "../../constant/email-templates.js";
 
 const module = "Orders";
 
@@ -76,12 +77,12 @@ export async function createService(data) {
     const { error } = validateCreate.validate(data);
     if (error) throw new Error(`Invalid request. ${error.message}`);
 
-    const senderObj = await Users.findById(data.createdBy).exec();
-    if (!senderObj)
+    const userObj = await Users.findById(data.createdBy).exec();
+    if (!userObj)
       throw new Error(`Cannot perform transaction, this user does not exist.`);
 
     data.orderCode = await generateModelCode(Orders);
-    data.user = senderObj.id;
+    data.user = userObj.id;
 
     const { proofImage } = data;
     if (proofImage) {
@@ -98,24 +99,36 @@ export async function createService(data) {
     if (!result) throw new Error(`${module} record not found.`);
 
     //send mail to user upon successful order creation
-    const mailResponse = await sendMailService(
-      senderObj.email,
-      "Order Confirmation Mail",
-      `
-        <p>
-          Dear customer, your order has been created successfully with the order code is <b> ${
-            result.orderCode
-          } </b>
+    // const mailResponse = await sendMailService(
+    //   userObj.email,
+    //   "Order Confirmation Mail",
+    //   `
+    //     <p>
+    //       Dear customer, your order has been created successfully with the order code is <b> ${
+    //         result.orderCode
+    //       } </b>
           
-          <br>
-          Your order will be processed as soon as possible. Click on the link below to chat with our admin in case of any issue.
-          <br/>
-          <br/>
-          <a href="https://wa.me/2347031625759" target="_blank">Chat with Admin</a>
-          <br>
-          Thank you for trusting us.
-        </p>
-        `
+    //       <br>
+    //       Your order will be processed as soon as possible. Click on the link below to chat with our admin in case of any issue.
+    //       <br/>
+    //       <br/>
+    //       <a href="https://wa.me/2347031625759" target="_blank">Chat with Admin</a>
+    //       <br>
+    //       Thank you for trusting us.
+    //     </p>
+    //     `
+    // )
+    // .then((res) => {
+    //   console.log("mail sent successfully");
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
+
+    const mailResponse = await sendMailService(
+      userObj.email,
+      "Order Confirmation Mail",
+      orderEmailTemplate(result, userObj)
     )
     .then((res) => {
       console.log("mail sent successfully");
@@ -126,23 +139,9 @@ export async function createService(data) {
 
     //send mail to user upon successful order creation
     const adminMailResponse = await sendMailService(
-      ["Chukwudeme0@gmail.com", "admin@chinosexchange.com"],
+      ["Chukwudeme0@gmail.com", "admin@chinosexchange.com", "michaelozor15@gmail.com"],
       "Order Confirmation Mail",
-      `
-        <p>
-          Dear Chino, An order has been created successfully with the order code is <b> ${
-            result.orderCode
-          } </b>
-          
-          <br>
-          Pls kindly fulfill this order. Click on the link below to chat with the user in case of any issue.
-          <br/>
-          <br/>
-          <a href="https://wa.me/+234${senderObj.phone}" target="_blank">Chat with User</a>
-          <br>
-          Thank you for trusting us.
-        </p>
-        `
+      orderEmailTemplate(result, userObj)
     )
     .then((res) => {
       console.log("mail sent successfully");
