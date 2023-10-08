@@ -12,7 +12,7 @@ const populateMail = (content) => {
                         .container {
                             background-color: #8652A44D;
                             width: 100%;
-                            min-height: 100vh;
+                            min-height: 50vh;
                             display: flex;
                             justify-content: center;
                         }
@@ -44,14 +44,14 @@ const populateMail = (content) => {
                         
                         .header {
                             display: flex;
-                            justify-content: center;
-                            border-bottom: 1px solid #585858;
+                            justify-content: center !important;
+                            border-bottom: 1px solid #d1d7db;
                             min-height: 50px;
                             padding: 1rem 0;
                         }
                         
                         .title {
-                            color: var(--BEDROCK-TEXT-2, #585858);
+                            color: #585858;
                             font-family: Raleway;
                             font-size: 16px;
                             font-style: normal;
@@ -60,17 +60,16 @@ const populateMail = (content) => {
                         }
                         
                         .emailText {
-                            color: var(--BEDROCK-BLUE, #55A9F8);
+                            color: #55A9F8;
                             font-family: Raleway;
                             font-size: 12px;
                             font-style: normal;
                             font-weight: 500;
-                            line-height: 150%;
                         }
 
-                        @media screen and (max-width: 480px) {
+                        @media screen and (max-width: 600px) {
                             .main-content {
-                                width: 80%;
+                                width: 80% !important;
                             }
                             .content {
                                 padding: 10px 20px;
@@ -95,19 +94,47 @@ const populateMail = (content) => {
                 </head>
 
                 <body>
-                    <div class="container">
+                    <div class="container"
+                        style="
+                            background-color: #8652A44D;
+                            width: 100%;
+                            min-height: 50vh;
+                            display: flex;
+                            justify-content: center;
+                        "
+                    >
                         <div class="main-content">
-                            <div class="header" style="display: flex; justify-content: center;">
-                                <img src="https://www.chinosexchange.com/static/media/logo.7939126ea4aa7c1dc477.png" width="120px" height="60px" alt="logo" />
+                        
+                            <div class="header" 
+                                style="
+                                    display: flex;
+                                    justify-content: center !important;
+                                    border-bottom: 1px solid #d1d7db;
+                                    min-height: 50px;
+                                    padding: 1rem 0;
+                                "
+                            >
+                                <img src="https://www.chinosexchange.com/static/media/logo.7939126ea4aa7c1dc477.png" width="100px" height="40px" alt="logo" style="margin: 0 auto;" />
                             </div>
+
+                            <style>
+                                @media (max-width: 600px) {
+                                    div[class="main-content"] {
+                                        width: 90% !important;
+                                        margin: 1rem auto;
+                                    }
+                                    img[width="100px"]{
+                                        width: 60px !important;
+                                        height: 30px !important;
+                                    }
+                                }
+                            </style>
 
                             <div
                                 class="content" 
-                                style="display: flex;
-                                justify-content: center;
-                                border-bottom: 1px solid #585858;
-                                min-height: 50px;
-                                padding: 1rem 0;"
+                                style="
+                                    padding: 10px 20px;
+                                "
                             >
                                 ${ content }
                             
@@ -126,46 +153,106 @@ const populateMail = (content) => {
 export const orderEmailTemplate = (order, recipient, isAdmin) => {
     const content = !isAdmin ? 
     `
-        <div 
-            class="content" 
-            style="display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #585858;
-            min-height: 50px;
-            padding: 1rem 0;"
-        >
-            <p class="title">
+        <div>
+            <p 
+                style="
+                    color: #585858;
+                    font-family: Raleway;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: 150%;
+                "
+            >
                 ${ recipient ? 'Hi '  +  recipient.firstName + ' ' + recipient.lastName : 'Dear Customer' }
             </p>
             
-            <p>you have successfully created an order with the following details</p>
+            <p 
+                style="
+                    color: #585858;
+                    font-family: Raleway;
+                    font-size: 12px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: 150%;
+                "
+            >you have successfully created an order with the following details</p>
             
-            <table style="margin: 1rem 0 .5rem 0;">
-                <tr class="title">
-                    <th style="text-align: left;">Order Code:</th>
-                    <td>${ order ? order.orderCode : '--'}</td>
-                </tr>
-                <tr class="title">
-                    <th style="text-align: left;">Amount:</th>
-                    <td>NGN ${ order ? order.amount : '--'}</td>
-                </tr>
-                <tr class="title">
-                    <th style="text-align: left;">Date/Time:</th>
-                    <td>${ order ? moment(order.createdAt).format('dd/mm/yyyy') : '--'}</td>
-                </tr>
-            </table>
+            <div style="margin: 1rem 0 .5rem 0; font-size: 12px;">
             
-            <p>Be aware that your order would be processed as soon as possible</p>
+                <table>
+                    <tr 
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    >
+                        <th style="text-align: left; font-size: 12px;">Order Code:</th>
+                        <td style="font-size: 12px;">${ order ? order.orderCode : '--'}</td>
+                    </tr>
+                    <tr 
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    style="font-size: 12px;">
+                        <th style="text-align: left; font-size: 12px;">Amount:</th>
+                        <td style="font-size: 12px;">NGN ${ order ? order.amount : '--'}</td>
+                    </tr>
+                    <tr 
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    >
+                        <th style="text-align: left; font-size: 12px;">Date/Time:</th>
+                        <td style="font-size: 12px;">${ order ? moment(order.createdAt).format('DD/MM/YYYY HH:mm:ss') : '--'}</td>
+                    </tr>
+                </table>
+            </div>
             
-            <br/>
-            <p>
-                contact us via our email <span class="emailText">admin@chinosexchange.com </span> if you have any issues with this transaction or Click on the link below to chat with our admin
+            <p style="color: #585858;">Be aware that your order would be processed as soon as possible</p>
+            
+            <p style="color: #585858;">
+                contact us via our email <span 
+                style="
+                    color: #55A9F8;
+                    font-family: Raleway;
+                    font-size: 12px;
+                    font-style: normal;
+                    font-weight: 500;
+                    margin: .5rem 0;
+                "
+            >admin@chinosexchange.com </span> if you have any issues with this transaction or Click on the link below to chat with our admin
             </p>
             
             <br/>
             
             <div style="display: flex; justify-content: center; width: 100%; margin: .85rem 0;">
-                <a href="https://wa.me/2347031625759" target="_blank" class="btn">
+                <a href="https://wa.me/2347031625759" target="_blank" class="btn" 
+                    style="
+                        background-color: #8652A4;
+                        padding: .7rem 0;
+                        border-radius: 50px;
+                        color: #ffffff;
+                        border: none;
+                        text-decoration: none;
+                        text-align: center;
+                        width: 100%;
+                    "
+                >
                     Chat via whatsapp
                 </a>
             </div>
@@ -173,34 +260,56 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
     ` :
 
     `
-        <div
-            class="content" 
-            style="display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #585858;
-            min-height: 50px;
-            padding: 1rem 0;"
-        >
+        <div>
             <p class="title">
                 Dear Admin, an order with the following details has been created
             </p>
-                                            
-            <table style="margin: 1rem 0 .5rem 0;">
-                <tr class="title">
-                    <th style="text-align: left;">Order Code:</th>
-                    <td>${ order ? order.orderCode : '--'}</td>
-                </tr>
-                <tr class="title">
-                    <th style="text-align: left;">Amount:</th>
-                    <td>NGN ${ order ? order.amount : '--'}</td>
-                </tr>
-                <tr class="title">
-                    <th style="text-align: left;">Date/Time:</th>
-                    <td>${ order ? moment(order.createdAt).format('dd/mm/yyyy') : '--'}</td>
-                </tr>
-            </table>
+                 
+            <div style="margin: 1rem 0 .5rem 0;">
+                <table>
+                    <tr
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    >
+                        <th style="text-align: left;">Order Code:</th>
+                        <td>${ order ? order.orderCode : '--'}</td>
+                    </tr>
+                    <tr
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    >
+                        <th style="text-align: left;">Amount:</th>
+                        <td>NGN ${ order ? order.amount : '--'}</td>
+                    </tr>
+                    <tr
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    >
+                        <th style="text-align: left;">Date/Time:</th>
+                        <td>${ order ? moment(order.createdAt).format('DD/MM/YYYY HH:mm:ss') : '--'}</td>
+                    </tr>
+                </table>
+            </div>
         
-            <p>Pls proceed to complete the order as soon as possible. Thank you.</p>
+            <p style="color: #585858;">Pls proceed to complete the order as soon as possible. Thank you.</p>
         
         </div>
     `
