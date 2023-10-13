@@ -34,6 +34,7 @@ export const validateAdminUpdate = joi.object({
   code: joi.string().min(5).max(5).optional(),
   email: joi.string().email().optional(),
   password: joi.string().trim().optional(),
+  userType: joi.string().valid("ADMIN", "USER").trim().optional(),
   updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 })
 
