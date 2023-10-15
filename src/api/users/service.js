@@ -455,7 +455,7 @@ export async function patchService(recordId, data) {
 
 export async function deleteService(recordId) {
   try {
-    const result = await User.findOneAndRemove({ _id: recordId });
+    const result = await Users.findOneAndRemove({ _id: recordId });
     if (!result) {
       throw new Error(`User record not found.`);
     }
