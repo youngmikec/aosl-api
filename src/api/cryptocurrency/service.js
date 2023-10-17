@@ -108,7 +108,7 @@ export async function updateService(recordId, data, user) {
     if (!returnedRecord) throw new Error(`${module} record not found.`);
     if (
       `${returnedRecord.createdBy}` !== user.id &&
-      (user.userType !== "ADMIN" || "EDITOR")
+      (user.userType !== "ADMIN")
     ) {
       throw new Error(
         `user ${user.email} does not have the permission to update`

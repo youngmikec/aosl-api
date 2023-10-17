@@ -10,6 +10,7 @@ export const validateCreate = joi.object({
   name: joi.string().trim().required(),
   shortName: joi.string().trim().required(),
   rate: joi.number().required(),
+  sellingRate: joi.number().required(),
   cryptoImage: joi.string().optional(),
   barcode: joi.string().optional(),
   walletAddress: joi.string().trim().required(),
@@ -46,6 +47,7 @@ export const validateUpdate = joi.object({
   name: joi.string().trim().optional(),
   shortName: joi.string().trim().optional(),
   rate: joi.number().optional(),
+  sellingRate: joi.number().optional(),
   cryptoImage: joi.string().optional(),
   barcode: joi.string().optional(),
   walletAddress: joi.string().trim().optional(),
@@ -89,6 +91,7 @@ export const schema = {
   accountNumber: { type: String, trim: true, select: true },
   code: { type: String, trim: true },
   rate: { type: Number, default: 1, select: true },
+  sellingRate: { type: Number, default: 1, select: true },
   cryptoImage: {
     type: String,
     select: true,

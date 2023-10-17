@@ -92,7 +92,7 @@ export async function updateService(recordId, data, user) {
 
         const returnedRecord = await Giftcard.findById(recordId).exec();
         if (!returnedRecord) throw new Error(`${module} record not found.`);
-        if (`${returnedRecord.createdBy}` !== user.id && (user.userType !== 'ADMIN' || 'EDITOR')) {
+        if (`${returnedRecord.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
         let { giftcardImage, barcode } = data;

@@ -205,7 +205,7 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                         "
                     style="font-size: 12px;">
                         <th style="text-align: left; font-size: 12px;">Amount:</th>
-                        <td style="font-size: 12px;">NGN ${ order ? order.amount : '--'}</td>
+                        <td style="font-size: 12px;">${order.type === 'SELL_CRYPTO' ? '$' : 'NGN'} ${ order ? order.amount : '--'}</td>
                     </tr>
                     <tr 
                         style="
@@ -291,7 +291,7 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                         "
                     >
                         <th style="text-align: left;">Amount:</th>
-                        <td>NGN ${ order ? order.amount : '--'}</td>
+                        <td>${order.type === 'SELL_CRYPTO' ? '$' : 'NGN'} ${ order ? order.amount : '--'}</td>
                     </tr>
                     <tr
                         style="

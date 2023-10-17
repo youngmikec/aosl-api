@@ -86,7 +86,7 @@ export async function updateService(recordId, data, user) {
 
         const returnedAirtime = await Airtime.findById(recordId).exec();
         if (!returnedAirtime) throw new Error(`${module} record not found.`);
-        if (`${returnedAirtime.createdBy}` !== user.id && (user.userType !== 'ADMIN' || 'EDITOR')) {
+        if (`${returnedAirtime.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
         const { networkImage } = data;

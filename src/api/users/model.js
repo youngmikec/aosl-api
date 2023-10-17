@@ -54,7 +54,7 @@ export const validateCreate = joi.object({
     phone: joi.string().trim().required(),
     email: joi.string().email().required(),
     password: joi.string().required(),
-    country: joi.string().valid(...Object.keys(COUNTRIES)).required()
+    country: joi.string().valid(...Object.keys(COUNTRIES)).required(),
 })
 
 export const validateUserUpdate = joi.object({
@@ -99,7 +99,6 @@ export const schema = {
       required: true,
     },
     phone: { type: String, trim: true, required: true, unique: true },
-  
    //  guarantorPhone: { type: String },
     isProfileComplete: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
