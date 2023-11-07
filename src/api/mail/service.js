@@ -1,15 +1,15 @@
 import aqp from "api-query-params";
 import Mails, { validateCreate, validateUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
-import { sendMail } from "../../services/index.js";
+import { nodeMailerService } from "../../services/node-mailer-service.js";
 
 const module = "Mails";
 
-export const sendMailService = async (userEmail, subject, message) => {
+export const SendMailService = async (userEmail, subject, message) => {
   try {
-    const result = await sendMail(
-      userEmail,
+    const result = await nodeMailerService(
       "admin@chinosexchange.com",
+      userEmail,
       subject,
       message
     );
@@ -52,7 +52,7 @@ export const fetchService = async (query) => {
     const msg = `${count} ${module} record(s) retrieved successfully!`;
     return { payload: result, total, count, msg, skip, limit, sort };
   } catch (err) {
-    throw new Error(`Error retrieving ${module} record ${error.message}`);
+    throw new Error(`Error retrieving ${module} record ${err.message}`);
   }
 };
 
@@ -62,19 +62,14 @@ export const createService = async (data) => {
     if (error) throw new Error(`${error.message}`);
 
     data.code = await generateModelCode(Mails);
+    const { email, subject, message } = data;
 
-    //send mail to user upon successful account creation
-    const response = await sendMailService(
-      data.email,
-      data.subject,
-      data.message
-    )
-      .then((res) => {
-        console.log("mail sent successfully");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // send mail to user upon successful account creation
+    const response = await SendMailService(email, subject, message);
+
+    if(res.error.statusCode >= 400){
+      throw new Error(res.error.message);
+    }
 
     const newRecord = new Mails(data);
     const result = await newRecord.save();
@@ -112,7 +107,7 @@ export async function updateService(recordId, data, user) {
     }
 
     //send mail to user upon successful account creation
-    sendMailService(result.email, result.subject, result.message)
+    SendMailService(result.email, result.subject, result.message)
       .then((res) => {
         console.log("mail sent successfully");
       })

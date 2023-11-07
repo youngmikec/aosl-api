@@ -1,6 +1,6 @@
 import aqp from "api-query-params";
 import { uploadImage } from "../../services/upload.js";
-import { sendMail } from "../../services/index.js";
+import { nodeMailerService } from "../../services/node-mailer-service.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import Users from "../users/model.js";
 import Orders, {
@@ -56,7 +56,7 @@ export const fetchService = async (query) => {
 
 const sendMailService = async (userEmail, subject, message) => {
   try {
-    const result = await sendMail(
+    const result = await nodeMailerService(
       "admin@chinosexchange.com",
       userEmail,
       subject,

@@ -4,7 +4,7 @@ import Newsletter, { validateCreate, validateUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import { uploadImage } from "../../services/upload.js";
 import Subscribers from "../subscribers/model.js";
-import { sendMail } from "../../services/mail.js";
+import { sendMail, sendMailService } from "../../services/mail.js";
 
 const module = "Newsletter";
 
@@ -84,10 +84,10 @@ export const fetchPublicService = async (query) => {
   }
 };
 
-const sendMailService = async (subscribers, subject, message) => {
+const SendMailService = async (subscribers, subject, message) => {
   try {
     console.log({ emails: `${subscribers}` });
-    const result = await sendMail(
+    const result = await sendMailService(
       "admin@chinosexchange.com",
       `${subscribers}`,
       subject,
@@ -118,7 +118,7 @@ export const createService = async (data) => {
     const resolved = Promise.all(
       mappedSubscirbers.map(async (item) => {
         //send mail to subscribers
-        const mailResponse = await sendMailService(
+        const mailResponse = await SendMailService(
           item,
           data.subject,
           data.message
@@ -167,7 +167,7 @@ export async function updateService(recordId, data, user) {
       const resolved = Promise.all(
         mappedSubscirbers.map(async (item) => {
           //send mail to subscribers
-          const mailResponse = await sendMailService(
+          const mailResponse = await SendMailService(
             item,
             data.subject,
             data.message

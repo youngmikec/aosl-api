@@ -20,9 +20,9 @@ import {
   generateOtp,
 } from "../../util/helpers.js";
 import { JWT, USER_TYPE } from "../../constant/index.js";
-import { sendMail } from "../../services/index.js";
+import { nodeMailerService } from "../../services/node-mailer-service.js";
 import { uploadImage } from "../../services/upload.js";
-import { verificationEmail } from '../../constant/email-templates.js'
+import { resetPasswordEmail, verificationEmail } from '../../constant/email-templates.js'
 
 dotenv.config();
 const module = "Users";
@@ -215,7 +215,7 @@ const minsAgo = (mins) => {
 
 const sendMailService = async (userEmail, subject, message) => {
   try {
-    const result = await sendMail(
+    const result = await nodeMailerService(
       "admin@chinosexchange.com",
       userEmail,
       subject,
@@ -255,12 +255,7 @@ export async function createService(data) {
       "Account Verification mail",
       verificationEmail(result)
     )
-    .then((res) => {
-      console.log("mail sent successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+
 
     delete result.transactionPin;
     delete result.code;
@@ -370,15 +365,7 @@ export const passwordResetCodeService = async (email) => {
     const mailResponse = await sendMailService(
       email,
       "Chinos Password Reset Code",
-      `
-        <p>
-          Dear customer ${user.firstName || ""} ${ user.lastName || "" }, your password reset code is <strong>${resetCode}</strong>
-        </p>
-        <br>
-        <p>
-            If you did not initiate this action pls ensure to secure your account and possibly contact support for further assistance.
-        </p>
-      `
+      resetPasswordEmail(user, resetCode)
     )
       .then((res) => {
         console.log("mail sent successfully");
@@ -497,11 +484,11 @@ export async function sendOTPService(data) {
         .then()
         .catch((err) => console.log(err.message));
     }
-    const mailData = {
-      recipientEmail: result.email,
-      subject: "Seafood Login OTP",
-      body: `Use this one-time password to login to your seafood.com account - OTP: ${otp} -SEAFOOD`,
-    };
+    // const mailData = {
+    //   recipientEmail: result.email,
+    //   subject: "Chinosexchange Login OTP",
+    //   body: `Use this one-time password to login to your seafood.com account - OTP: ${otp} -CHINOSEXCHANGE`,
+    // };
     //Uncomment this field as soon as you have integrated mail sending functionality.
     // if (result.email) {
     //   Mails.createService(mailData)

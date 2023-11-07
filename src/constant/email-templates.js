@@ -320,12 +320,25 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
 export const verificationEmail = (userData) => {
     const content = `
         <p>
-            Dear customer ${userData.firstName || ""} ${userData.lastName || ""}, welcome on board your account was created successfully.<br>
-            We are pleased to have you with us. Your verification code is <b> ${ userData.code }</b>
-            
-            Follow the link below to get started and enjoy unlimited, seamless service you can ever imagine<br>
-            <a href="${`${process.env.FRONTEND_VERIFY_URL}/${userData.code}`}" target="_blank">${`${process.env.FRONTEND_VERIFY_URL}/${userData.code}`}</a><br>
+            Dear esteemed customer your account has been created successfully. Your verification code is <b> ${ userData.code }</b>
+        
+            We are happy to have you onboard, kindly use link below to begin enjoying our services <br>
+            <a href="${`https://chinosexchange.com/verify/${userData.code}`}" target="_blank">${`https://chinosexchange.com/verify/${userData.code}`}</a><br>
             Thank you for trusting us.
+        </p>
+    `;
+
+    return populateMail(content);
+}
+
+export const resetPasswordEmail = (user, resetCode) => {
+    const content = `
+        <p>
+            Dear customer ${user.firstName || ""} ${ user.lastName || "" }, your password reset code is <strong>${resetCode}</strong>
+        </p>
+        <br>
+        <p>
+            If you did not initiate this action pls ensure to secure your account and possibly contact support for further assistance.
         </p>
     `;
 
