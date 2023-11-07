@@ -2,9 +2,6 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.EMAIL_API_KEY);
 
 /**
  * 
@@ -35,20 +32,4 @@ export async function sendMail(senderEmail, recipientEmail, subject, message){
         html: `<b>${message}</b>`, // html body
     });
 
-}
-
-
-export const sendMailService = async (senderEmail, recipientEmails, subject, message) => {
-    try {
-        const data = await resend.emails.send({
-          from: senderEmail,
-          to: recipientEmails,
-          subject: subject,
-          html: message,
-        });
-    
-        return data;
-    } catch (error) {
-        console.error('error', error);
-    }
 }

@@ -4,7 +4,7 @@ import Newsletter, { validateCreate, validateUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import { uploadImage } from "../../services/upload.js";
 import Subscribers from "../subscribers/model.js";
-import { sendMail, sendMailService } from "../../services/mail.js";
+import { sendMail } from "../../services/mail.js";
 
 const module = "Newsletter";
 
@@ -87,7 +87,7 @@ export const fetchPublicService = async (query) => {
 const SendMailService = async (subscribers, subject, message) => {
   try {
     console.log({ emails: `${subscribers}` });
-    const result = await sendMailService(
+    const result = await sendMail(
       "admin@chinosexchange.com",
       `${subscribers}`,
       subject,

@@ -16,7 +16,6 @@
   "author": "Ozor Michael C",
   "license": "ISC",
   "dependencies": {
-    "@getbrevo/brevo": "^1.0.1",
     "api-query-params": "^5.3.1",
     "babel-polyfill": "^6.26.0",
     "bcrypt": "^5.0.1",
@@ -38,7 +37,6 @@
     "nodemailer": "^6.9.7",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "resend": "^2.0.0",
     "slugify": "^1.6.5"
   },
   "devDependencies": {
