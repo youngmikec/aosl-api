@@ -122,7 +122,7 @@ export const schema = {
     deleted: { type: Number, enum: [0, 1], default: 0, select: false },
     deletedAt: { type: Date, select: false },
     deletedBy: { type: ObjectId, select: false },
-  };
+};
 
 const options = DATABASE.OPTIONS;
 
