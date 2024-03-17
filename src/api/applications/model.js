@@ -81,6 +81,7 @@ export const schema = {
     required: true,
     select: true,
   },
+  job: { type: ObjectId, ref: "Jobs", select: true },
   createdBy: { type: ObjectId, ref: "Users", select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },
   deleted: { type: Boolean, default: false, select: false },

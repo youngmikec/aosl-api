@@ -2,6 +2,7 @@ import aqp from "api-query-params";
 import { setLimit } from "../../util/index.js";
 import Orders from "../orders/model.js";
 import Users from "../users/model.js";
+import Applications from "../applications/model.js";
 
 export const fetchService = async (query) => {
     try{ 
@@ -11,10 +12,10 @@ export const fetchService = async (query) => {
         limit = setLimit(10);
         if (!filter.deleted) filter.deleted = 0;
         const totalOrders = await Orders.countDocuments({}).exec();
-        const pendingOrders = await Orders.countDocuments({status: 'PENDING', deleted: 0}).exec();
-        const declinedOrders = await Orders.countDocuments({status: 'DECLINED', deleted: 0}).exec();
+        const pendingApplications = await Applications.countDocuments({status: 'APPLIED', deleted: 0}).exec();
+        const acceptedApplications = await Applications.countDocuments({status: 'ACCEPTED', deleted: 0}).exec();
         const completedOrders = await Orders.countDocuments({status: 'COMPLETED', deleted: 0}).exec();
-        const recentOrders = await Orders.find({})
+        const recentApplications = await Applications.find({})
         .limit(limit)
         .sort({ createdAt: -1 })
         .exec();
@@ -23,19 +24,19 @@ export const fetchService = async (query) => {
         
         const values = await Promise.all([
             totalOrders,
-            pendingOrders, 
-            declinedOrders,
+            pendingApplications, 
+            acceptedApplications,
             completedOrders,
-            recentOrders,
+            recentApplications,
             users
         ]);
         
         const result = {
             totalOrders: values[0],
-            pendingOrders: values[1],
-            declinedOrders: values[2],
+            pendingApplications: values[1],
+            acceptedApplications: values[2],
             completedOrders: values[3],
-            recentOrders: values[4],
+            recentApplications: values[4],
             users: values[5]
         }
 
