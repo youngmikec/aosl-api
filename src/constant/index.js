@@ -159,7 +159,7 @@ export const DATABASE = {
 export const ENTITY = {
   USERS: "Users",
   CRYPTOCURRENCY: "Cryptocurrency",
-  AIRTIME: "Airtime",
+  JOB: "Jobs",
   GIFTCARD: "Giftcard",
   NEWSLETTER: "Newsletter",
   ORDERS: "Orders",
@@ -194,11 +194,49 @@ export const INPUT_TYPE = {
   NUMBER: "NUMBER",
 };
 
-export const AIRTIME = {
-  STATUS: {
-    ACTIVE: "ACTIVE",
-    DEACTIVATED: "DEACTIVATED",
+export const APPLICATION = {
+  CERTLEVEL: {
+    MSC: 'MSC',
+    PHD: 'PHD',
+    HIGHSCHOOL: 'HIGHSCHOOL',
+    BSC: 'BSC',
+    DEGREE: 'DEGREE',
+    DOCTORATE: 'DOCTORATE'
   },
+  STATUS: {
+    APPLIED: 'APPLIED',
+    ACCEPTED: 'ACCEPTED',
+    REVIEW: 'REVIEW',
+    DECLINED: 'DECLINED'
+  }
+}
+
+export const JOB = {
+  TYPE: {
+    WORK: "WORK",
+    TRAINING: "TRAINING",
+  },
+  STATUS: {
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+  },
+  WORKMODE: {
+    REMOTE: 'REMOTE',
+    HYBRID: 'HYBRID',
+    ONSITE: 'ONSITE',
+    FULLTIME: 'FULLTIME',
+    PART_TIME: 'PART_TIME'
+  },
+  PAYMENTMETHOD: {
+    BANK: 'BANK',
+    PAYPAL: 'PAYPAL',
+  },
+  PAYMENTDURATION: {
+    MONTHLY: 'MONTHLY',
+    HOURLY: 'HOURLY',
+    WEEKLY: 'WEEKLY',
+    ANNUALY: 'ANNUALY'
+  }
 };
 
 export const GIFTCARD = {

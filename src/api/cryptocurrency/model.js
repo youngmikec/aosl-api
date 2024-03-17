@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import joi from "joi";
 
-import { AIRTIME, DATABASE } from "../../constant/index.js";
+import { DATABASE } from "../../constant/index.js";
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -107,13 +107,13 @@ export const schema = {
     },
   ],
 
-  status: {
-    type: String,
-    enum: Object.values(AIRTIME.STATUS),
-    default: "ACTIVE",
-    required: true,
-    select: true,
-  },
+  // status: {
+  //   type: String,
+  //   enum: Object.values(AIRTIME.STATUS),
+  //   default: "ACTIVE",
+  //   required: true,
+  //   select: true,
+  // },
 
   paymentDescription: { type: String },
   paymentSteps: { type: Array, default: [], select: true },

@@ -1,10 +1,10 @@
 import aqp from "api-query-params";
 import Users from "../users/model.js";
-import Airtime, { validateCreate, validateUpdate } from "./model.js";
+import Jobs, { validateCreate, validateUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import { uploadImage } from "../../services/upload.js";
 
-const module = 'Airtime';
+const module = 'Jobs';
 
 export const fetchService = async (query) => {
     try {
@@ -23,9 +23,49 @@ export const fetchService = async (query) => {
         limit = setLimit(limit);
         if (!filter.deleted) filter.deleted = 0;
 
-        const total = await Airtime.countDocuments(filter).exec();
+        const total = await Jobs.countDocuments(filter).exec();
 
-        const result = await Airtime.find(filter)
+        const result = await Jobs.find(filter)
+            .populate(population)
+            .sort(sort)
+            .limit(limit)
+            .skip(skip)
+            .select(projection)
+            .exec();
+        
+        if(!result){
+            throw new Error(`${module} record not found`);
+        }
+        const count = result.length;
+        const msg = `${count} ${module} record(s) retrieved successfully!`;
+        return { payload: result, total, count, msg, skip, limit, sort };
+
+    }catch ( err ) {
+        throw new Error(`Error retrieving ${module} record ${error.message}`);
+    }
+}
+
+
+export const fetchPublicService = async (query) => {
+    try {
+        let { filter, skip, population, sort, projection } = aqp(query);
+        const searchQuery = filter.q ? filter.q : false;
+        if(searchQuery) {
+            const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+            filter.$or = [
+              { name: { $regex: new RegExp(searchString, "i") } },
+              { shortName: { $regex: new RegExp(searchString, "i") } },
+              { $text: { $search: escaped, $caseSensitive: false } },
+            ];
+            delete filter.q;
+        }
+        let { limit } = aqp(query);
+        limit = setLimit(limit);
+        if (!filter.deleted) filter.deleted = 0;
+
+        const total = await Jobs.countDocuments(filter).exec();
+
+        const result = await Jobs.find(filter)
             .populate(population)
             .sort(sort)
             .limit(limit)
@@ -58,22 +98,22 @@ export const createService = async (data) => {
         }else {
             console.log('no network image found');
         }
-        const existingRecord = await Airtime.findOne({name: name}).exec();
+        const existingRecord = await Jobs.findOne({name: name}).exec();
         if(existingRecord) throw new Error(`Record already exist`);
 
-        data.code = await generateModelCode(Airtime);
+        data.code = await generateModelCode(Jobs);
         const creator = await Users.findById(data.createdBy).exec();
         if (!creator) throw new Error(`User ${data.createdBy} not found`);
         data.createdBy = creator.id;
 
-        const newRecord = new Airtime(data);
+        const newRecord = new Jobs(data);
         const result = await newRecord.save();
         if(!result) throw new Error(`${module} record not found`);
 
         return result;
 
     }catch (err) {
-        throw new Error(`Error creating Airtime record. ${err.message}`);
+        throw new Error(`Error creating Jobs record. ${err.message}`);
     }
 }
 
@@ -84,9 +124,9 @@ export async function updateService(recordId, data, user) {
             throw new Error(`Invalid request. ${error.message}`);
         }
 
-        const returnedAirtime = await Airtime.findById(recordId).exec();
-        if (!returnedAirtime) throw new Error(`${module} record not found.`);
-        if (`${returnedAirtime.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
+        const returnedJobs = await Jobs.findById(recordId).exec();
+        if (!returnedJobs) throw new Error(`${module} record not found.`);
+        if (`${returnedJobs.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
         const { networkImage } = data;
@@ -97,7 +137,7 @@ export async function updateService(recordId, data, user) {
             console.log('no network image found');
         }
       
-      const result = await Airtime.findOneAndUpdate({ _id: recordId }, data, {
+      const result = await Jobs.findOneAndUpdate({ _id: recordId }, data, {
         new: true,
       }).exec();
       if (!result) {
@@ -112,12 +152,12 @@ export async function updateService(recordId, data, user) {
 
 export async function deleteService(recordId) {
     try {
-        const result = await Airtime.findOneAndRemove({ _id: recordId });
+        const result = await Jobs.findOneAndRemove({ _id: recordId });
         if (!result) {
-            throw new Error(`Airtime record not found.`);
+            throw new Error(`Jobs record not found.`);
         }
         return result;
     } catch (err) {
-        throw new Error(`Error deleting Airtime record. ${err.message}`);
+        throw new Error(`Error deleting Jobs record. ${err.message}`);
     }
 }
