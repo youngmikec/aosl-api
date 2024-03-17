@@ -93,18 +93,20 @@ export const createService = async (data) => {
         const { name } = data;
         let { networkImage } = data;
         if(networkImage){
-            const uploadResult = await uploadImage(networkImage);
-            data.networkImage = uploadResult.url;
+          const uploadResult = await uploadImage(networkImage);
+          data.networkImage = uploadResult.url;
         }else {
-            console.log('no network image found');
+          console.log('no network image found');
         }
         const existingRecord = await Applications.findOne({name: name}).exec();
         if(existingRecord) throw new Error(`Record already exist`);
 
         data.code = await generateModelCode(Applications);
-        const creator = await Users.findById(data.createdBy).exec();
-        if (!creator) throw new Error(`User ${data.createdBy} not found`);
-        data.createdBy = creator.id;
+        if(data.createdBy){
+          const creator = await Users.findById(data.createdBy).exec();
+          if (!creator) throw new Error(`User ${data.createdBy} not found`);
+          data.createdBy = creator.id;
+        }
 
         const newRecord = new Applications(data);
         const result = await newRecord.save();

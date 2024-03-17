@@ -228,10 +228,12 @@ export const JOB = {
     PART_TIME: 'PART_TIME'
   },
   PAYMENTMETHOD: {
+    NONE: 'NONE',
     BANK: 'BANK',
     PAYPAL: 'PAYPAL',
   },
   PAYMENTDURATION: {
+    NONE: 'NONE',
     MONTHLY: 'MONTHLY',
     HOURLY: 'HOURLY',
     WEEKLY: 'WEEKLY',

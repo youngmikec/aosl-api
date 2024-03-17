@@ -12,13 +12,15 @@ export const validateCreate = joi.object({
   phoneNumber: joi.string().required(),
   state: joi.string().required(),
   nationality: joi.string().required(),
-  certLevel: joi.string().valid(Object.values(APPLICATION.CERTLEVEL)).required(),
+  certLevel: joi.string().valid(...Object.values(APPLICATION.CERTLEVEL)).required(),
   address: joi.string().required(),
+  role: joi.string().required(),
   biography: joi.string().optional(),
   resume: joi.string().optional(),
   skills: joi.string().optional(),
   experienceYears: joi.number().required(),
-  status: joi.string().valid(Object.values(APPLICATION.STATUS)).optional(),
+  status: joi.string().valid(...Object.values(APPLICATION.STATUS)).optional(),
+  job: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
   createdBy: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
@@ -32,13 +34,14 @@ export const validateUpdate = joi.object({
   phoneNumber: joi.string().optional(),
   state: joi.string().optional(),
   nationality: joi.string().optional(),
-  certLevel: joi.string().valid(Object.values(APPLICATION.CERTLEVEL)).optional(),
+  certLevel: joi.string().valid(...Object.values(APPLICATION.CERTLEVEL)).optional(),
   address: joi.string().optional(),
+  role: joi.string().optional(),
   biography: joi.string().optional(),
   resume: joi.string().optional(),
   skills: joi.string().optional(),
   experienceYears: joi.number().optional(),
-  status: joi.string().valid(Object.values(APPLICATION.STATUS)).optional(),
+  status: joi.string().valid(...Object.values(APPLICATION.STATUS)).optional(),
   updatedBy: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
@@ -78,7 +81,7 @@ export const schema = {
     required: true,
     select: true,
   },
-  createdBy: { type: ObjectId, ref: "Users", required: true, select: true },
+  createdBy: { type: ObjectId, ref: "Users", select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },
   deleted: { type: Boolean, default: false, select: false },
   deletedAt: { type: Date, select: false },

@@ -4,7 +4,7 @@ import {
   updateService,
   deleteService,
   fetchPublicService,
-} from "./service.js";
+} from "./services.js";
 import { fail, response, success } from "../../util/response.js";
 
 

@@ -1,4 +1,4 @@
-import joi, { object } from "joi";
+import joi from "joi";
 import mongoose from "mongoose";
 import { JOB, DATABASE } from "../../constant/index.js";
 
@@ -12,10 +12,10 @@ export const validateCreate = joi.object({
   jobImage: joi.string().optional(),
   companyName: joi.string().trim().optional(),
   termDuration: joi.string().trim().required(),
-  type: joi.string().valid(Object.values(JOB.TYPE)).trim().required(),
-  paymentDuration: joi.string().valid(Object.values(JOB.PAYMENTDURATION)).trim().required(),
-  paymentMethod: joi.string().valid(Object.values(JOB.PAYMENTMETHOD)).trim().required(),
-  jobRequirements: joi.array(joi.string()).required(),
+  type: joi.string().valid(...Object.values(JOB.TYPE)).trim().required(),
+  paymentDuration: joi.string().valid(...Object.values(JOB.PAYMENTDURATION)).trim().required(),
+  paymentMethod: joi.string().valid(...Object.values(JOB.PAYMENTMETHOD)).trim().required(),
+  jobRequirements: joi.array().items(joi.string()).required(),
   createdBy: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
@@ -28,11 +28,11 @@ export const validateUpdate = joi.object({
   renumeration: joi.number().optional(),
   jobImage: joi.string().optional(),
   companyName: joi.string().trim().optional(),
-  type: joi.string().valid(Object.values(JOB.TYPE)).trim().optional(),
+  type: joi.string().valid(...Object.values(JOB.TYPE)).trim().optional(),
   termDuration: joi.string().trim().optional(),
-  paymentDuration: joi.string().valid(Object.values(JOB.PAYMENTDURATION)).trim().optional(),
-  paymentMethod: joi.string().valid(Object.values(JOB.PAYMENTMETHOD)).trim().optional(),
-  jobRequirements: joi.array(joi.string()).optional(),
+  paymentDuration: joi.string().valid(...Object.values(JOB.PAYMENTDURATION)).trim().optional(),
+  paymentMethod: joi.string().valid(...Object.values(JOB.PAYMENTMETHOD)).trim().optional(),
+  jobRequirements: joi.array().items(joi.string()).optional(),
   updatedBy: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
