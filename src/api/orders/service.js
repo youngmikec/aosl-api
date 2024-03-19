@@ -8,7 +8,7 @@ import Orders, {
   validateUpdate,
   validatePublicUpdate,
 } from "./model.js";
-import { orderEmailTemplate } from "../../constant/email-templates.js";
+import { orderEmailTemplate, paymentInvoiceMailTemplate } from "../../constant/email-templates.js";
 
 const module = "Orders";
 
@@ -57,7 +57,7 @@ export const fetchService = async (query) => {
 const sendMailService = async (userEmail, subject, message) => {
   try {
     const result = await nodeMailerService(
-      "admin@chinosexchange.com",
+      "support@aosl-online.com",
       userEmail,
       subject,
       message
@@ -77,21 +77,17 @@ export async function createService(data) {
     const { error } = validateCreate.validate(data);
     if (error) throw new Error(`Invalid request. ${error.message}`);
 
+    const { userDetails, paymentMethod, paymentGateway } = data;
+
     const userObj = await Users.findById(data.createdBy).exec();
     if (!userObj)
       throw new Error(`Cannot perform transaction, this user does not exist.`);
 
-    data.orderCode = await generateModelCode(Orders);
-    data.user = userObj.id;
+    const code = await generateModelCode(Orders);
+    data.orderCode = `#AO${code}SL`
 
-    const { proofImage } = data;
-    if (proofImage) {
-      const uploadResult = await uploadImage(proofImage);
-      data.proofImage = uploadResult.url;
-      data.status = "PROOFED";
-    } else {
-      console.log("no transaction proof image found");
-    }
+    const urlLink = `https://aosl-online.com/invoice/${data.orderCode}${paymentGateway ? `?p=${paymentGateway}` : ''}`;
+    data.invoiceLink = urlLink;
 
     const newOrder = new Orders(data);
     const result = await newOrder.save();
@@ -99,9 +95,9 @@ export async function createService(data) {
     if (!result) throw new Error(`${module} record not found.`);
 
     const mailResponse = await sendMailService(
-      userObj.email,
-      "Order Confirmation Mail",
-      orderEmailTemplate(result, userObj, false)
+      userDetails.email,
+      "AOSL Online Payment Invoice Mail",
+      paymentInvoiceMailTemplate(result, userDetails, false)
     )
     .then((res) => {
       console.log("mail sent successfully");
@@ -112,9 +108,9 @@ export async function createService(data) {
 
     //send mail to user upon successful order creation
     const adminMailResponse = await sendMailService(
-      ["Chukwudeme0@gmail.com", "admin@chinosexchange.com", "michaelozor15@gmail.com"],
+      ["promzyluv002@yahoo.com", "admin@aosl-online.com", "michaelozor15@gmail.com"],
       "Order Confirmation Mail",
-      orderEmailTemplate(result, userObj, true)
+      paymentInvoiceMailTemplate(result, userDetails, true)
     )
     .then((res) => {
       console.log("mail sent successfully");

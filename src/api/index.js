@@ -1,6 +1,8 @@
 import express from "express";
 import applicationRoute from './applications/index.js';
 import jobRoute from './job/index.js';
+import chatRoute from './chat/index.js';
+import productServiceRoute from './product-services/index.js';
 import bankRoute from "./banks/index.js";
 import ordersRoute from "./orders/index.js";
 import userRoute from "./users/index.js";
@@ -15,6 +17,9 @@ const router = express.Router();
 
 router.use(jobRoute);
 router.use(applicationRoute);
+router.use(chatRoute);
+router.use(productServiceRoute);
+
 
 router.use(userRoute);
 router.use(bankRoute);

@@ -32,6 +32,11 @@ export const ORDERS = {
   PAYMENT_METHOD: {
     BANK: "BANK",
     WALLET: "WALLET",
+    GATEWAY: "GATEWAY",
+  },
+  PAYMENT_GATEWAY: {
+    PAYPAL: "PAYPAL",
+    STRIPE: "STRIPE",
   },
 };
 

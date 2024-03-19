@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.get('/orders', [checkAuth], fetchHandler);
 
-router.post('/orders', [checkAuth], createHandler);
+router.post('/orders', [checkAuth, isValidAdmin], createHandler);
 
 
 // update orders
