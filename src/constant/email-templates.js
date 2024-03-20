@@ -10,7 +10,7 @@ const populateMail = (content) => {
                 <head>
                     <style>
                         .container {
-                            background-color: #8652A44D;
+                            background-color: #134FE7;
                             width: 100%;
                             min-height: 50vh;
                             display: flex;
@@ -32,7 +32,7 @@ const populateMail = (content) => {
                         }
                         
                         .btn {
-                            background-color: #8652A4;
+                            background-color: #134FE7;
                             padding: .7rem 0;
                             border-radius: 50px;
                             color: #ffffff;
@@ -96,7 +96,7 @@ const populateMail = (content) => {
                 <body>
                     <div class="container"
                         style="
-                            background-color: #8652A44D;
+                            background-color: #134FE7;
                             width: 100%;
                             min-height: 50vh;
                             display: flex;
@@ -114,7 +114,7 @@ const populateMail = (content) => {
                                     padding: 1rem 0;
                                 "
                             >
-                                <img src="https://www.chinosexchange.com/static/media/logo.7939126ea4aa7c1dc477.png" width="100px" height="40px" alt="logo" style="margin: 0 auto;" />
+                                <img src="https://aosl-online.com/wp-content/uploads/2024/01/LOGO-W.png" width="100px" height="40px" alt="logo" style="margin: 0 auto;" />
                             </div>
 
                             <style>
@@ -205,7 +205,7 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                         "
                     style="font-size: 12px;">
                         <th style="text-align: left; font-size: 12px;">Amount:</th>
-                        <td style="font-size: 12px;">${order.orderType === 'SELL_CRYPTO' ? '$' : 'NGN'} ${ order ? order.amount : '--'}</td>
+                        <td style="font-size: 12px;">${ order ? `$ ${order.amount}` : '--'}</td>
                     </tr>
                     <tr 
                         style="
@@ -223,7 +223,7 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                 </table>
             </div>
             
-            <p style="color: #585858;">Be aware that your order would be processed as soon as possible</p>
+            <p style="color: #585858;">You can proceed to invoice page to make payment for your service</p>
             
             <p style="color: #585858;">
                 contact us via our email <span 
@@ -235,15 +235,15 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                     font-weight: 500;
                     margin: .5rem 0;
                 "
-            >admin@chinosexchange.com </span> if you have any issues with this transaction or Click on the link below to chat with our admin
+            >support@aosl-online.com </span> if you have any issues with this transaction or Click on the link below to chat with our admin
             </p>
             
             <br/>
             
             <div style="display: flex; justify-content: center; width: 100%; margin: .85rem 0;">
-                <a href="https://wa.me/2347031625759" target="_blank" class="btn" 
+                <a href="${`https://aosl-online.com/invoice/${order.orderCode}?gw=ps`}" target="_blank" class="btn" 
                     style="
-                        background-color: #8652A4;
+                        background-color: #134FE7;
                         padding: .7rem 0;
                         border-radius: 50px;
                         color: #ffffff;
@@ -253,7 +253,7 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                         width: 100%;
                     "
                 >
-                    Chat via whatsapp
+                    Proceed to payment
                 </a>
             </div>
         </div>
@@ -291,7 +291,7 @@ export const orderEmailTemplate = (order, recipient, isAdmin) => {
                         "
                     >
                         <th style="text-align: left;">Amount:</th>
-                        <td>${order.orderType === 'SELL_CRYPTO' ? '$' : 'NGN'} ${ order ? order.amount : '--'}</td>
+                        <td>${ order ? `$ ${order.amount}` : '--'}</td>
                     </tr>
                     <tr
                         style="
@@ -372,7 +372,20 @@ export const paymentInvoiceMailTemplate = (order, recipient, isAdmin) => {
                         "
                     style="font-size: 12px;">
                         <th style="text-align: left; font-size: 12px;">Amount:</th>
-                        <td style="font-size: 12px;">${order.orderType === 'SELL_CRYPTO' ? '$' : 'NGN'} ${ order ? order.amount : '--'}</td>
+                        <td style="font-size: 12px;">${ order ? `$ ${order.amount}` : '--'}</td>
+                    </tr>
+                    <tr 
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    style="font-size: 12px;">
+                        <th style="text-align: left; font-size: 12px;">Payment Status:</th>
+                        <td style="font-size: 12px;">${ order ? `${order.status.toLowerCase()}` : '--'}</td>
                     </tr>
                     <tr 
                         style="
@@ -390,7 +403,7 @@ export const paymentInvoiceMailTemplate = (order, recipient, isAdmin) => {
                 </table>
             </div>
             
-            <p style="color: #585858;">Be aware that your order would be processed as soon as possible</p>
+            <p style="color: #585858;">You can proceed to invoice page to make payment for your service</p>
             
             <p style="color: #585858;">
                 contact us via our email <span 
@@ -402,15 +415,15 @@ export const paymentInvoiceMailTemplate = (order, recipient, isAdmin) => {
                     font-weight: 500;
                     margin: .5rem 0;
                 "
-            >admin@chinosexchange.com </span> if you have any issues with this transaction or Click on the link below to chat with our admin
+            >support@aosl-online.com </span> if you have any issues with this transaction.
             </p>
             
             <br/>
             
             <div style="display: flex; justify-content: center; width: 100%; margin: .85rem 0;">
-                <a href="https://wa.me/2347031625759" target="_blank" class="btn" 
+                <a href="${`https://aosl-online.com/invoice/${order.orderCode}?gw=ps`}" target="_blank" class="btn" 
                     style="
-                        background-color: #8652A4;
+                        background-color: #134FE7;
                         padding: .7rem 0;
                         border-radius: 50px;
                         color: #ffffff;
@@ -420,7 +433,7 @@ export const paymentInvoiceMailTemplate = (order, recipient, isAdmin) => {
                         width: 100%;
                     "
                 >
-                    Chat via whatsapp
+                    Proceed to payment
                 </a>
             </div>
         </div>
@@ -459,6 +472,19 @@ export const paymentInvoiceMailTemplate = (order, recipient, isAdmin) => {
                     >
                         <th style="text-align: left;">Amount:</th>
                         <td>${order.orderType === 'SELL_CRYPTO' ? '$' : 'NGN'} ${ order ? order.amount : '--'}</td>
+                    </tr>
+                    <tr
+                        style="
+                            color: #585858;
+                            font-family: Raleway;
+                            font-size: 12px;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: 150%;
+                        "
+                    >
+                        <th style="text-align: left;">Payment Status:</th>
+                        <td>${ order ? order.status.toLowerCase() : '--'}</td>
                     </tr>
                     <tr
                         style="

@@ -12,7 +12,7 @@ let transporter = nodemailer.createTransport({
 
 export const nodeMailerService = async (senderEmail, recipientEmail, subject, message) => {
     const mailOptions = {
-        from: `"Chinos Exchange 👻" <${senderEmail}>`, // sender address
+        from: `"All Occupation Services Ltd" <${senderEmail}>`, // sender address
         to: `${recipientEmail}`, // list of receivers
         subject: `${subject}`, // Subject line
         // text: "Hello world?", // plain text body

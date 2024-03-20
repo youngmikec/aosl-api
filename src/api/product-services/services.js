@@ -1,7 +1,7 @@
 import aqp from "api-query-params";
 import Users from "../users/model.js";
 import ProductServices, { validateCreate, validateUpdate } from "./model.js";
-import { generateModelCode, setLimit } from "../../util/index.js";
+import { generateModelCode, setLimit, slugifyText } from "../../util/index.js";
 import { uploadImage } from "../../services/upload.js";
 
 const module = 'ProductServices';
@@ -92,21 +92,27 @@ export const fetchPublicService = async (query) => {
     }
 }
 
+
+
 export const createService = async (data) => {
     try {
         const { error } = validateCreate.validate(data);
         if(error) throw new Error(`${error.message}`);
 
-        const { name } = data;
-        let { networkImage } = data;
-        if(networkImage){
-          const uploadResult = await uploadImage(networkImage);
-          data.networkImage = uploadResult.url;
-        }else {
-          console.log('no network image found');
-        }
-        const existingRecord = await ProductServices.findOne({name: name}).exec();
+        const { title, url } = data;
+        // let { networkImage } = data;
+        // if(networkImage){
+        //   const uploadResult = await uploadImage(networkImage);
+        //   data.networkImage = uploadResult.url;
+        // }else {
+        //   console.log('no network image found');
+        // }
+        const existingRecord = await ProductServices.findOne({title: title}).exec();
         if(existingRecord) throw new Error(`Record already exist`);
+
+        if(!url){
+            data.url = `https://aosl-online.com/services/${slugifyText(title)}`;
+        }
 
         data.code = await generateModelCode(ProductServices);
         if(data.createdBy){
@@ -133,25 +139,24 @@ export async function updateService(recordId, data, user) {
             throw new Error(`Invalid request. ${error.message}`);
         }
 
+        const { title, url } = data;
+        
         const returnedProductServices = await ProductServices.findById(recordId).exec();
         if (!returnedProductServices) throw new Error(`${module} record not found.`);
         if (`${returnedProductServices.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
-        const { networkImage } = data;
-        if(networkImage){
-            const uploadResult = await uploadImage(networkImage);
-            data.networkImage = uploadResult.url;
-        }else {
-            console.log('no network image found');
+        
+        if(!url){
+            data.url = `https://aosl-online.com/services/${slugifyText(title)}`;
         }
       
-      const result = await ProductServices.findOneAndUpdate({ _id: recordId }, data, {
-        new: true,
-      }).exec();
-      if (!result) {
-        throw new Error(`${module} record not found.`);
-      }
+        const result = await ProductServices.findOneAndUpdate({ _id: recordId }, data, {
+            new: true,
+        }).exec();
+        if (!result) {
+            throw new Error(`${module} record not found.`);
+        }
       return result;
     } catch (err) {
       throw new Error(`Error updating ${module} record. ${err.message}`);

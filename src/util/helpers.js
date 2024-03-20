@@ -25,6 +25,15 @@ export function getLoginType(data) {
   return loginType;
 }
 
+
+/**
+  Function that takes in a text and converts it into a slug format by replacing spaces with hyphens.
+  @param {string} text - The input text to be slugified.
+  @returns {string} - The slugified text with spaces replaced by hyphens. 
+*/
+
+export const slugifyText = (text) => text.split(' ').join('-');
+
 /**
  * generateObjectId() creates a uuid for a record using the locationId
  * @param {string} serial or Integer primary key to be converted to ObjectId

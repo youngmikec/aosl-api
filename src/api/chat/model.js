@@ -9,6 +9,7 @@ const { ObjectId } = Schema.Types;
 export const validateSendMessage = joi.object({
   sender: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
   recipient: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
+  room: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
   message: joi.string().required(),
   createdBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 });
@@ -16,6 +17,7 @@ export const validateSendMessage = joi.object({
 export const validateUpdateMessage = joi.object({
   sender: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
   recipient: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+  room: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
   message: joi.string().optional(),
   updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 });

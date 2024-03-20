@@ -41,7 +41,7 @@ export const schema = {
   title: { type: String, trim: true, required: true },
   subTitle: { type: String, trim: true, select: true },
   description: { type: String, trim: true, required: true },
-  url: { type: String, trim: true, required: true },
+  url: { type: String, trim: true, },
   image: {
     type: String,
     select: true,
@@ -52,8 +52,8 @@ export const schema = {
   },
   status: {
     type: String,
-    enum: Object.values(APPLICATION.STATUS),
-    default: APPLICATION.STATUS.APPLIED,
+    enum: Object.values(STATUS),
+    default: STATUS.ACTIVE,
     required: true,
     select: true,
   },

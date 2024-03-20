@@ -90,7 +90,7 @@ export const sendMessageService = async (data) => {
       const { error } = validateSendMessage.validate(data);
       if(error) throw new Error(`${error.message}`);
 
-      const { recipient, sender } = data;
+      const { recipient, sender, room } = data;
 
       if(sender){
         const creator = await Users.findById(sender).exec();
@@ -102,6 +102,10 @@ export const sendMessageService = async (data) => {
         const receiver = await Users.findById(recipient).exec();
         if (!receiver) throw new Error(`User ${recipient} not found`);
       }
+
+      // check if user is in the room
+
+      // add user to chat room if user is not in the room
 
       const newRecord = new ChatMessage(data);
       const result = await newRecord.save();
