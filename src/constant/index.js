@@ -70,6 +70,23 @@ export const WALLET = {
   },
 };
 
+export const PAYPAL = {
+  INTENT: {
+    SALE: 'sale',
+    INVOICE: 'invoice'
+  },
+  PAYMENT_METHOD: 'paypal',
+  CURRENCY: {
+    USD: 'USD',
+    NGN: 'NGN',
+    GBP: 'GBP'
+  },
+  REDIRECT_URLS: {
+    RETURN_URL: 'https://aosl-online.com/paypal/?status=suceess',
+    CANCLE_URL: 'https://aosl-online.com/paypal/?status=failed'
+  }
+}
+
 export const EMAIL = {
   ADMIN: "freexittechnologies@gmail.com",
   SENDER: "sender@freexitnow.com",
