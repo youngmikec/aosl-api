@@ -1,10 +1,10 @@
 import paypal from 'paypal-rest-sdk';
 import dotenv from 'dotenv';
-import { PAYPAL } from '../constant';
+import { PAYPAL } from '../constant/index.js';
 
 dotenv.config();
 
-PAYPAL_MODE = 'sandbox'
+// PAYPAL_MODE = 'sandbox'
 // PAYPAL_MODE = 'live'
 
 paypal.configure({

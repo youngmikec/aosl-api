@@ -39,10 +39,13 @@ app.use(compression())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.send('Chinos backend says hi')
+    res.send('AOSL backend says hi')
 })
 
 // Use Routes
+app.use("/api/welcome", (req, res) => {
+    res.send('AOSL says Hi')
+});
 app.use("/api", appApi);
 
 

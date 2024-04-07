@@ -5,6 +5,41 @@ import { DATABASE, ORDERS } from "../../constant/index.js";
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
+// "transactions": [{
+    //   "item_list": {
+    //       "items": [{
+    //           "name": "item",
+    //           "sku": "item",
+    //           "price": "1.00",
+    //           "currency": "USD",
+    //           "quantity": 1
+    //       }]
+    //   },
+    //   "amount": {
+    //       "currency": "USD",
+    //       "total": "1.00"
+    //   },
+    //   "description": "This is the payment description."
+    // }]
+
+export const validatePayment = joi.object({
+  transaction: joi.array().items({
+    item_list: joi.object({
+      items: joi.array().items({
+        name: joi.string().trim().required(),
+        serviceCode: joi.string().trim().required(),
+        price: joi.string().trim().required(),
+        quantity: joi.number().default(1).required(),
+      }).required(),
+    }).required(),
+    amount: joi.object({
+      currency: joi.string().trim().required(),
+      total: joi.string().trim().required(),
+    }).required(),
+    description: joi.string().trim().required(),
+  }).required(),
+})
+
 export const validateCreate = joi.object({
   amount: joi.number().required(),
   userDetails: joi.object({

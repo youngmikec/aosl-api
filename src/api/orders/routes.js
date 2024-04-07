@@ -4,6 +4,7 @@ import {
     createHandler,
     updateHandler,
     deleteHandler,
+    createPaymentHandler,
     updatePublicHandler,
 } from './controller.js';
 import { checkAuth, isValidAdmin } from '../../middleware/index.js';
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get('/orders', [checkAuth], fetchHandler);
 
 router.post('/orders', [checkAuth, isValidAdmin], createHandler);
+router.post('/orders/make-payment', createPaymentHandler);
 
 
 // update orders

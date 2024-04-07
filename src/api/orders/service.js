@@ -7,8 +7,10 @@ import Orders, {
   validateCreate,
   validateUpdate,
   validatePublicUpdate,
+  validatePayment,
 } from "./model.js";
 import { orderEmailTemplate, paymentInvoiceMailTemplate } from "../../constant/email-templates.js";
+import { createPaypalPayment } from "../../services/paypal-service.js";
 
 const module = "Orders";
 
@@ -122,6 +124,29 @@ export async function createService(data) {
     session.commitTransaction();
     session.endSession();
     return result;
+  } catch (err) {
+    session.abortTransaction();
+    session.endSession();
+    throw new Error(`Error creating ${module} record. ${err.message}`);
+  }
+}
+
+export const createPaymentService = async (data) => {
+  const session = await Orders.startSession();
+  session.startTransaction({
+    readConcern: { level: "snapshot" },
+    writeConcern: { w: 1 },
+  });
+  try {
+    const { error } = validatePayment.validate(data);
+    if(error) throw new Error(`Invalid request. ${error.message}`);
+
+    const result = await createPaypalPayment(data);
+    
+    session.commitTransaction();
+    session.endSession;
+    return result;
+
   } catch (err) {
     session.abortTransaction();
     session.endSession();

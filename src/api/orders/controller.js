@@ -3,6 +3,7 @@ import {
     createService,
     updateService,
     deleteService,
+    createPaymentService,
     updatePublicService
 } from "./service.js";
 import { fail, response, success } from "../../util/response.js"
@@ -20,6 +21,15 @@ export const fetchHandler = async (req, res) => {
 export const createHandler = async (req, res) => {
     try {
         const result = await createService(req.body);
+        return success(res, 201, result);
+    } catch ( err ) {
+        return fail(res, 400, `${err.message}`);
+    }
+}
+
+export const createPaymentHandler = async (req, res) => {
+    try {
+        const result = await createPaymentService(req.body);
         return success(res, 201, result);
     } catch ( err ) {
         return fail(res, 400, `${err.message}`);
