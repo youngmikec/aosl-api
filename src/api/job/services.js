@@ -90,15 +90,15 @@ export const createService = async (data) => {
         const { error } = validateCreate.validate(data);
         if(error) throw new Error(`${error.message}`);
 
-        const { name } = data;
-        let { networkImage } = data;
-        if(networkImage){
-            const uploadResult = await uploadImage(networkImage);
-            data.networkImage = uploadResult.url;
+        const { title } = data;
+        let { jobImage } = data;
+        if(jobImage){
+            const uploadResult = await uploadImage(jobImage);
+            data.jobImage = uploadResult.url;
         }else {
             console.log('no network image found');
         }
-        const existingRecord = await Jobs.findOne({name: name}).exec();
+        const existingRecord = await Jobs.findOne({ title }).exec();
         if(existingRecord) throw new Error(`Record already exist`);
 
         data.code = await generateModelCode(Jobs);

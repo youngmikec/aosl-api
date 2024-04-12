@@ -106,7 +106,7 @@ const options = DATABASE.OPTIONS;
 
 const newSchema = new Schema(schema, options);
 
-newSchema.index({ name: 1 }, { unique: true });
+newSchema.index({ title: 1 }, { unique: true });
 
 newSchema.set("collection", "jobs");
 
