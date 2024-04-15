@@ -457,6 +457,21 @@ export const COUNTRIES = [
   { name: 'Tunisia', code: '+216' },
   { name: 'Turkey', code: '+90' },
   { name: 'Turkmenistan', code: '+993' },
+  { name: 'Tuvalu', code: '+688' },
+  { name: 'Uganda', code: '+256' },
+  { name: 'Ukraine', code: '+380' },
+  { name: 'United Arab Emirates', code: '+971' },
+  { name: 'United Kingdom', code: '+44' },
+  { name: 'United States', code: '+1' },
+  { name: 'Uruguay', code: '+598' },
+  { name: 'Uzbekistan', code: '+998' },
+  { name: 'Vanuatu', code: '+678' },
+  { name: 'Vatican City (Holy See)', code: '+379' },
+  { name: 'Venezuela', code: '+58' },
+  { name: 'Vietnam', code: '+84' },
+  { name: 'Yemen', code: '+967' },
+  { name: 'Zambia', code: '+260' },
+  { name: 'Zimbabwe', code: '+263' }
 ];
 
 
