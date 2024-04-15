@@ -67,8 +67,8 @@ export const createService = async (data) => {
     // send mail to user upon successful account creation
     const response = await SendMailService(email, subject, message);
 
-    if(res.error.statusCode >= 400){
-      throw new Error(res.error.message);
+    if(response.error.statusCode >= 400){
+      throw new Error(response.error.message);
     }
 
     const newRecord = new Mails(data);

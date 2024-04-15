@@ -54,7 +54,7 @@ export const validateCreate = joi.object({
     phone: joi.string().trim().required(),
     email: joi.string().email().required(),
     password: joi.string().required(),
-    country: joi.string().valid(...Object.keys(COUNTRIES)).required(),
+    country: joi.string().valid(...COUNTRIES.map(country => country.name)).required(),
 })
 
 export const validateUserUpdate = joi.object({
@@ -63,7 +63,7 @@ export const validateUserUpdate = joi.object({
     phone: joi.string().trim().optional(),
     email: joi.string().email().optional(),
     password: joi.string().optional(),
-    country: joi.string().valid(...Object.keys(COUNTRIES)).optional(),
+    country: joi.string().valid(...COUNTRIES.map(country => country.name)).optional(),
     profileImage: joi.string().trim().optional(),
     updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 })
@@ -75,6 +75,7 @@ export const schema = {
       default: USER_TYPE.USER,
     },
     code: { type: String, select: true },
+    country: { type: String, select: true },
     resetCode: { type: String, select: true },
     canResetPassword: { type: String, default: false, select: true },
     balance: { type: Number, default: 0, select: true },
