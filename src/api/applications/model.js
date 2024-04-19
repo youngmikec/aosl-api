@@ -42,6 +42,7 @@ export const validateUpdate = joi.object({
   skills: joi.string().optional(),
   experienceYears: joi.number().optional(),
   status: joi.string().valid(...Object.values(APPLICATION.STATUS)).optional(),
+  job: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
   updatedBy: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
@@ -92,8 +93,6 @@ export const schema = {
 const options = DATABASE.OPTIONS;
 
 const newSchema = new Schema(schema, options);
-
-newSchema.index({ name: 1 }, { unique: true });
 
 newSchema.set("collection", "applications");
 
