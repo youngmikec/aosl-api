@@ -26,7 +26,7 @@ export const validateUpdateMessage = joi.object({
 const chatMessageSchema = {
   sender: { type: ObjectId, ref: 'Users', required: true },
   recipient: { type: ObjectId, ref: 'Users', required: true },
-  room: { type: ObjectId, ref: 'Users', required: true },
+  room: { type: ObjectId, ref: 'ChatRoom', required: true },
   message: { type: String, required: true },
   createdAt: { type: Date, default: Date.now() },
   createdBy: { type: ObjectId, ref: "Users", select: true },
@@ -42,6 +42,6 @@ const newSchema = new Schema(chatMessageSchema, options);
 
 newSchema.set("collection", "chatmessage");
 
-const ChatRoom = mongoose.model("ChatRoom", newSchema);
+const ChatMessage = mongoose.model("ChatMessage", newSchema);
 
-export default ChatRoom;
+export default ChatMessage;

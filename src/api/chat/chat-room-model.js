@@ -39,6 +39,6 @@ const newSchema = new Schema(chatRoomSchema, options);
 
 newSchema.set("collection", "chatRoom");
 
-const ChatMessage = mongoose.model("ChatMessage", newSchema);
+const ChatRoom = mongoose.model("ChatRoom", newSchema);
 
-export default ChatMessage;
+export default ChatRoom;
