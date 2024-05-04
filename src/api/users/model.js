@@ -99,6 +99,7 @@ export const schema = {
       ],
       required: true,
     },
+    chatRoom: { type: String, ref: 'ChatRoom', select: true },
     phone: { type: String, trim: true, required: true, unique: true },
    //  guarantorPhone: { type: String },
     isProfileComplete: { type: Boolean, default: false },

@@ -23,6 +23,7 @@ import { JWT, USER_TYPE } from "../../constant/index.js";
 import { nodeMailerService } from "../../services/node-mailer-service.js";
 import { uploadImage } from "../../services/upload.js";
 import { resetPasswordEmail, verificationEmail } from '../../constant/email-templates.js'
+import ChatRoom from "../chat/chat-room-model.js";
 
 dotenv.config();
 const module = "Users";
@@ -195,28 +196,10 @@ export async function fetchAnyService(param) {
   }
 }
 
-const generateWallet = async () => {
-  let code = generateCode(10);
-  let duplicate = await User.findOne({ wallet: code }).exec();
-  if (duplicate) {
-    code = generateCode(10);
-    duplicate = await User.findOne({ wallet: code }).exec();
-    if (duplicate) {
-      throw new Error(`Error! Record already exist for Wallet ${code}`);
-    }
-  }
-  return code;
-};
-
-const minsAgo = (mins) => {
-  const time = new Date();
-  return time.setMinutes(time.getMinutes() - Number(mins));
-};
-
 const sendMailService = async (userEmail, subject, message) => {
   try {
     const result = await nodeMailerService(
-      "admin@chinosexchange.com",
+      "admin@aosl-online.com",
       userEmail,
       subject,
       message
@@ -242,11 +225,27 @@ export async function createService(data) {
     }
     if (safeGet(data, "password")) data.password = hash(data.password);
     data.code = generateCode(10).slice(0, 5);
+
     const newRecord = new Users(data);
-    const result = await newRecord.save();
+    let result = await newRecord.save();
 
     if (!result) {
       throw new Error(`User record not found.`);
+    }
+
+    const admins = await Users.find({userType: "ADMIN"}).exec();
+    let newChatRoom;
+    if(admins.length > 0){
+      const chatRoomPayload = {
+        name: `${data.firstName} ${data.lastName}`,
+        members: [...admins.map(admin => admin._id), result._id],
+      }
+      const response = new ChatRoom(chatRoomPayload);
+      newChatRoom = await response.save();  
+    }
+
+    if(newChatRoom){
+      result = await Users.findOneAndUpdate({_id: result.id}, {chatRoom: newChatRoom._id}, {new: true});
     }
 
     //send mail to user upon successful account creation
@@ -256,8 +255,6 @@ export async function createService(data) {
       verificationEmail(result)
     )
 
-
-    delete result.transactionPin;
     delete result.code;
 
     return result;

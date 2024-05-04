@@ -516,7 +516,7 @@ export const verificationEmail = (userData) => {
             Dear esteemed customer your account has been created successfully. Your verification code is <b> ${ userData.code }</b>
         
             We are happy to have you onboard, kindly use link below to begin enjoying our services <br>
-            <a href="${`https://chinosexchange.com/verify/${userData.code}`}" target="_blank">${`https://chinosexchange.com/verify/${userData.code}`}</a><br>
+            <a href="${`https://www.aosl-online.com/verify/${userData.code}`}" target="_blank">${`https://www.aosl-online.com/verify/${userData.code}`}</a><br>
             Thank you for trusting us.
         </p>
     `;

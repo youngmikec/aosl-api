@@ -4,7 +4,8 @@ import {
   sendMessageService,
   createRoomService,
   deleteChatService,
-  fetchChatRoomService
+  fetchChatRoomService,
+  deleteChatRoomService
 } from './services.js';
 
 
@@ -48,6 +49,15 @@ export const handleCreateRoom = async (req, res) => {
 export const handleDeleteChat = async (req, res) => {
   try {
       const result = await deleteChatService(req.params.recordId);
+      return success(res, 200, result);
+  } catch (err) {
+      return fail(res, 400, `${err.message}`);
+  }
+}
+
+export const handleDeleteChatRoom = async (req, res) => {
+  try {
+      const result = await deleteChatRoomService(req.params.recordId);
       return success(res, 200, result);
   } catch (err) {
       return fail(res, 400, `${err.message}`);

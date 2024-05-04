@@ -103,6 +103,8 @@ export const sendMessageService = async (data) => {
         if (!receiver) throw new Error(`User ${recipient} not found`);
       }
 
+      data.createdAt = new Date();
+
       // check if user is in the room
 
       // add user to chat room if user is not in the room
@@ -161,4 +163,16 @@ export const createRoomService = async (data) => {
     } catch (err) {
         throw new Error(`Error deleting ChatMessage record. ${err.message}`);
     }
-}
+  }
+
+  export async function deleteChatRoomService(recordId) {
+    try {
+        const result = await ChatRoom.findOneAndRemove({ _id: recordId });
+        if (!result) {
+            throw new Error(`Chat Room record not found.`);
+        }
+        return result;
+    } catch (err) {
+        throw new Error(`Error deleting Chat Room record. ${err.message}`);
+    }
+  }

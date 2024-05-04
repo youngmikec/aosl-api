@@ -8,7 +8,7 @@ const module = "Mails";
 export const SendMailService = async (userEmail, subject, message) => {
   try {
     const result = await nodeMailerService(
-      "admin@chinosexchange.com",
+      "admin@aosl-online.com",
       userEmail,
       subject,
       message

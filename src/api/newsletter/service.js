@@ -88,7 +88,7 @@ const SendMailService = async (subscribers, subject, message) => {
   try {
     console.log({ emails: `${subscribers}` });
     const result = await sendMail(
-      "admin@chinosexchange.com",
+      "admin@aosl-online.com",
       `${subscribers}`,
       subject,
       message

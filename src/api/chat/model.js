@@ -28,7 +28,7 @@ const chatMessageSchema = {
   recipient: { type: ObjectId, ref: 'Users', required: true },
   room: { type: ObjectId, ref: 'ChatRoom', required: true },
   message: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now() },
+  createdAt: { type: Date, select: true },
   createdBy: { type: ObjectId, ref: "Users", select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },
   deleted: { type: Boolean, default: false, select: false },
