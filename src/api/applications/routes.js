@@ -3,6 +3,7 @@ import {
     fetchHandler,
     createHandler,
     updateHandler,
+    updateUserHandler,
     fetchPublicHandler,
     deleteHandler,
 } from './controller.js';
@@ -22,6 +23,7 @@ router.post('/applications-register', createHandler);
 
 // update applications
 router.put('/applications/:recordId', [checkAuth, isValidAdmin], updateHandler);
+router.put('/applications-user/:recordId', [checkAuth], updateUserHandler);
 
 
 // delete applications

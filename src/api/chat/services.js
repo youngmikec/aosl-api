@@ -167,12 +167,13 @@ export const createRoomService = async (data) => {
 
   export async function deleteChatRoomService(recordId) {
     try {
-        const result = await ChatRoom.findOneAndRemove({ _id: recordId });
-        if (!result) {
-            throw new Error(`Chat Room record not found.`);
-        }
-        return result;
+      console.log("recordId", recordId);
+      const result = await ChatRoom.findOneAndRemove({ _id: recordId });
+      if (!result) {
+        throw new Error(`Chat Room record not found.`);
+      }
+      return result;
     } catch (err) {
-        throw new Error(`Error deleting Chat Room record. ${err.message}`);
+      throw new Error(`Error deleting Chat Room record. ${err.message}`);
     }
   }

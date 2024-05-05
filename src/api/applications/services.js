@@ -1,8 +1,9 @@
 import aqp from "api-query-params";
 import Users from "../users/model.js";
-import Applications, { validateCreate, validateUpdate } from "./model.js";
+import Applications, { validateCreate, validateUpdate, validateUserUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import { uploadImage } from "../../services/upload.js";
+import { APPLICATION } from "../../constant/index.js";
 
 const module = 'Applications';
 
@@ -91,11 +92,12 @@ export const createService = async (data) => {
         if(error) throw new Error(`${error.message}`);
 
         let { resume } = data;
+        data.status = APPLICATION.STATUS.APPLIED;
         if(resume){
           const uploadResult = await uploadImage(resume);
           data.resume = uploadResult.url;
         }else {
-          console.log('no network image found');
+          console.log('no resume image found');
         }
 
         data.code = await generateModelCode(Applications);
@@ -128,12 +130,42 @@ export async function updateService(recordId, data, user) {
         if (`${returnedApplications.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
-        const { networkImage } = data;
-        if(networkImage){
-            const uploadResult = await uploadImage(networkImage);
-            data.networkImage = uploadResult.url;
+        const { resume } = data;
+        if(resume){
+            const uploadResult = await uploadImage(resume);
+            data.resume = uploadResult.url;
         }else {
-            console.log('no network image found');
+            console.log('no resume image found');
+        }
+      
+      const result = await Applications.findOneAndUpdate({ _id: recordId }, data, {
+        new: true,
+      }).exec();
+      if (!result) {
+        throw new Error(`${module} record not found.`);
+      }
+      return result;
+    } catch (err) {
+      throw new Error(`Error updating ${module} record. ${err.message}`);
+    }
+}
+
+export async function updateUserService(recordId, data, user) {
+    try {
+        const { error } = validateUserUpdate.validate(data);
+        if (error) {
+            throw new Error(`Invalid request. ${error.message}`);
+        }
+
+        const returnedApplications = await Applications.findById(recordId).exec();
+        if (!returnedApplications) throw new Error(`${module} record not found.`);
+        
+        const { resume } = data;
+        if(resume){
+            const uploadResult = await uploadImage(resume);
+            data.resume = uploadResult.url;
+        }else {
+            console.log('no resume image found');
         }
       
       const result = await Applications.findOneAndUpdate({ _id: recordId }, data, {

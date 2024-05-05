@@ -21,7 +21,7 @@ router.post('/send-message', [checkAuth], handleSendMessage);
 
 router.post('/create-room', [checkAuth, isValidAdmin], handleCreateRoom);
 
-router.delete('/delete-chat/:id', [checkAuth, isValidAdmin], handleDeleteChat);
-router.delete('/chat-room/:id', [checkAuth, isValidAdmin], handleDeleteChatRoom);
+router.delete('/delete-chat/:recordId', [checkAuth, isValidAdmin], handleDeleteChat);
+router.delete('/chat-room/:recordId', [checkAuth, isValidAdmin], handleDeleteChatRoom);
 
 export default router;

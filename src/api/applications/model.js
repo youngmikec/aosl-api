@@ -19,9 +19,29 @@ export const validateCreate = joi.object({
   resume: joi.string().optional(),
   skills: joi.string().optional(),
   experienceYears: joi.number().required(),
-  status: joi.string().valid(...Object.values(APPLICATION.STATUS)).optional(),
   job: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
   createdBy: joi
+    .string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .optional(),
+});
+
+export const validateUserUpdate = joi.object({
+  firstName: joi.string().trim().optional(),
+  lastName: joi.string().trim().optional(),
+  email: joi.string().email().optional(),
+  phoneNumber: joi.string().optional(),
+  state: joi.string().optional(),
+  nationality: joi.string().optional(),
+  certLevel: joi.string().valid(...Object.values(APPLICATION.CERTLEVEL)).optional(),
+  address: joi.string().optional(),
+  role: joi.string().optional(),
+  biography: joi.string().optional(),
+  resume: joi.string().optional(),
+  skills: joi.string().optional(),
+  experienceYears: joi.number().optional(),
+  job: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+  updatedBy: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional(),
