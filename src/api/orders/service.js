@@ -8,6 +8,7 @@ import Orders, {
   validateUpdate,
   validatePublicUpdate,
   validatePayment,
+  validateCreateOrderInvoice
 } from "./model.js";
 import { orderEmailTemplate, paymentInvoiceMailTemplate } from "../../constant/email-templates.js";
 import { createPaypalPayment } from "../../services/paypal-service.js";
@@ -151,6 +152,26 @@ export const createPaymentService = async (data) => {
     session.abortTransaction();
     session.endSession();
     throw new Error(`Error creating ${module} record. ${err.message}`);
+  }
+}
+
+export const createIvoiceService = async (data) => {
+  const session = await Orders.startSession();
+  session.startTransaction({
+    readConcern: { level: 'snapshot' },
+    writeConcern: { w: 1}
+  });
+
+  try {
+    const { error } = validateCreateOrderInvoice(data);
+    if(error) throw new Error(`Invalid request. ${error.message}`);
+
+
+    
+  } catch (err) {
+    session.abortTransaction();
+    session.endSession();
+    throw new Error( `Error creating ${module} record. ${err.message}`);
   }
 }
 

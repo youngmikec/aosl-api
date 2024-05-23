@@ -40,6 +40,23 @@ export const validatePayment = joi.object({
   }).required(),
 })
 
+export const validateCreateOrderInvoice = joi.object({
+  amount: joi.number().required(),
+  paymentMethod: joi
+    .string()
+    .trim()
+    .valid(...Object.values(ORDERS.PAYMENT_METHOD))
+    .required(),
+    productService: joi
+    .string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .required(),
+    createdBy: joi
+      .string()
+      .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+      .optional(),
+})
+
 export const validateCreate = joi.object({
   amount: joi.number().required(),
   userDetails: joi.object({

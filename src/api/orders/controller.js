@@ -3,6 +3,7 @@ import {
     createService,
     updateService,
     deleteService,
+    createIvoiceService,
     createPaymentService,
     updatePublicService
 } from "./service.js";
@@ -24,6 +25,15 @@ export const createHandler = async (req, res) => {
         return success(res, 201, result);
     } catch ( err ) {
         return fail(res, 400, `${err.message}`);
+    }
+}
+
+export const createInvoiceHandler = async (req, res) => {
+    try {
+        const result = await createIvoiceService(req.body);
+        return success(res, 201, result);
+    } catch ( err ) {
+        return fail(res, 400,  `${err.message}`);
     }
 }
 
