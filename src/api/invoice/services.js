@@ -1,6 +1,8 @@
 import aqp from "api-query-params";
-import { generateModelCode, setLimit } from "../../util/index.js";
-import Invoice, { validateClientDetails, validateCreate } from './model.js';
+import { generateCode, generateModelCode, setLimit } from "../../util/index.js";
+import Invoice, { validateClientDetails, validateCreate, validateCreateOrder } from './model.js';
+import { createPaypalOrder } from "../../services/paypal-service.js";
+import { PAYPAL } from "../../constant/app-constants.js";
 
 
 const module = 'Invoice';
@@ -103,6 +105,68 @@ export const createService = async (data) => {
 
   } catch (err) {
     throw new Error(`Error creating Invoice. ${err.message}`);
+  }
+}
+
+export const createOrderService = async (req) => {
+  try {
+    const data = req.body;
+    const { paypalAuthToken } = req.headers;
+
+    const { error } = validateCreateOrder.validate(data);
+    if(error) throw new Error(`${error.message}`);
+
+    const { purchaseItems, totalAmount, currency_code } = data;
+
+    const orderCode = generateCode(5);
+    const orderPayload = {
+      intent: 'CAPTURE',
+      purchase_units: [
+        {
+          items: purchaseItems.map(item => (
+            {
+              name: item.name, 
+              description: item.description, 
+              quantity: item.quantity, 
+              unit_amount: {
+                value: item.unit_amount,
+                currency_code: currency_code
+              }
+            }
+        )),
+          amount: {
+            currency_code,
+            value: `${totalAmount}`,
+            breakdown: {
+              item_total: {
+                currency_code,
+                value: `${totalAmount}`
+              }
+            }
+          }
+        }
+      ],
+      application_context: {
+        "return_url": PAYPAL.REDIRECT_URLS.RETURN_URL, //"https://example.com/return",
+        "cancel_url": PAYPAL.REDIRECT_URLS.RETURN_URL, //"https://example.com/cancel",
+        "brand_name": "All Occupation Service Limited",
+        "landing_page": "BILLING",
+        "user_action": "PAY_NOW"
+      }
+    }
+
+    const orderResponse = await createPaypalOrder(orderPayload, paypalAuthToken);
+
+    if(!orderResponse){
+      throw new Error(`Cannot create order`);
+    }
+
+    return {
+      ...orderResponse.data
+    };
+
+  } catch (err) {
+    throw new Error(`Error occurred while creating order`)
   }
 }
 

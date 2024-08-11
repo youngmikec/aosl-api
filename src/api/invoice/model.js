@@ -30,7 +30,19 @@ export const validateClientDetails = joi.object({
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional(),
-})
+});
+
+export const validateCreateOrder = joi.object({
+  purchaseItems: joi.array().items({
+    name: joi.string().required(),
+    description: joi.string().required(),
+    quantity: joi.number().min(1).required(),
+    unit_amount: joi.number().required()
+  }).required(),
+  invoiceCode: joi.string().required(),
+  totalAmount: joi.number().required(),
+  currency_code: joi.string().required(),
+});
 
 const schema = {
   invoiceCode: { type: String, select: true, trim: true, required: true },

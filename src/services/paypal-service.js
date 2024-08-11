@@ -1,8 +1,15 @@
+import axios from 'axios';
+import dotenv from 'dotenv';
+import qs from 'qs';
 import paypal from '../config/paypal.js';
 import { PAYPAL } from '../constant/index.js';
 
+dotenv.config();
 
-export const createPaypalPayment = async (transactionPayload) => {
+const PAYPAL_BASE_URL_V1 = process.env.PAYPAL_BASE_URL + '/v1';
+const PAYPAL_BASE_URL_V2 = process.env.PAYPAL_BASE_URL + '/v2';
+
+export const createPaypalPayment = async (transactionPayload, authToken) => {
   const payload = {
     intent: "sale",
     payer: {
@@ -31,3 +38,49 @@ export const createPaypalPayment = async (transactionPayload) => {
     throw new Error(error.message);
   }
 };
+
+export const createPaypalOrder = async (data, authorization) => {
+  try {
+    const url = `${PAYPAL_BASE_URL_V2}/checkout/orders`;
+    console.log(data.purchase_units[0].items);
+    const response = await axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `${authorization}`
+      }
+    });
+    if(!response){
+      throw new Error('Error occured while placing an order');
+    }
+    return response;
+  }catch(err){
+    console.log('Error Paypal Response Error', err.message);
+  }
+};
+
+export const PaypalAuthorizationService = async () => {
+  try {
+    const url = `${PAYPAL_BASE_URL_V1}/oauth2/token`;
+    const postData = qs.stringify({
+      grant_type: process.env.PAYPAL_AUTH_GRANT_TYPE,
+      ignoreCache: true,
+    });
+
+    const authHeader = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
+
+    const response = await axios.post(url, postData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${authHeader}`
+      }
+    });
+
+    if(!response) {
+      throw new Error('Error occured while authorizing Paypal');
+    }
+    return response;
+
+  } catch(err){
+    console.error('Error making POST request:', err.message);
+  }
+}

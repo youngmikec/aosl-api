@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "api-query-params": "^5.3.1",
+    "axios": "^1.7.3",
     "babel-polyfill": "^6.26.0",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
@@ -36,6 +37,7 @@
     "mongoose": "^5.12.3",
     "nodemailer": "^6.9.7",
     "paypal-rest-sdk": "^1.8.1",
+    "qs": "^6.13.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "slugify": "^1.6.5"
