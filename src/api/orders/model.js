@@ -65,28 +65,16 @@ export const validateCreate = joi.object({
     email: joi.string().email().required(),
     phoneNumber: joi.string().trim().required(),
     address: joi.string().required(),
-  }).required(),
-
-  paymentMethod: joi
-    .string()
-    .trim()
-    .valid(...Object.values(ORDERS.PAYMENT_METHOD))
-    .optional(),
-  status: joi
-    .string()
-    .trim()
-    .valid(...Object.values(ORDERS.STATUS))
-    .optional(),
-  paymentGateway: joi
-    .string()
-    .trim()
-    .valid(...Object.values(ORDERS.PAYMENT_GATEWAY))
-    .optional(),
-
-  productService: joi
-    .string()
-    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
-    .required(),
+  }).optional(),
+  checkoutUrls: joi.array().items({
+    href: joi.string().required(),
+    rel: joi.string().required(),
+    method: joi.string().required()
+  }).optional(),
+  invoiceUrl: joi.string().optional(),
+  status: joi.string().optional(),
+  orderId: joi.string().required(),
+  orderCode: joi.string().required(),
   
   createdBy: joi
     .string()
@@ -139,8 +127,9 @@ export const validatePublicUpdate = joi.object({
 });
 
 export const schema = {
+  orderId: { type: String, required: true, select: true },
   orderCode: { type: String, trim: true, select: true },
-  amount: { type: Number, select: true },
+  amount: { type: Number, required: true, select: true },
   userDetails: {
     firstName: { type: String, trim: true, select: true },
     lastName: { type: String, trim: true, select: true },
@@ -151,27 +140,11 @@ export const schema = {
   invoiceUrl: { type: String, select: true },
   status: {
     type: String,
-    enum: Object.values(ORDERS.STATUS),
     required: true,
-    default: "PENDING",
     select: true,
   },
-  paymentMethod: {
-    type: String,
-    enum: Object.values(ORDERS.PAYMENT_METHOD),
-    required: true,
-    default: ORDERS.PAYMENT_METHOD.GATEWAY,
-    select: true,
-  },
-  paymentGateway: {
-    type: String,
-    enum: Object.values(ORDERS.PAYMENT_GATEWAY),
-    required: true,
-    default: ORDERS.PAYMENT_GATEWAY.PAYPAL,
-    select: true,
-  },
-  productService: { type: ObjectId, ref: "ProductServices", select: true },
-  createdBy: { type: ObjectId, ref: "Users", required: true, select: true },
+
+  createdBy: { type: ObjectId, ref: "Users", select: true },
   approvedBy: { type: ObjectId, ref: "Users", select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },
   deleted: { type: Boolean, default: false, select: false },

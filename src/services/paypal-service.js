@@ -42,7 +42,6 @@ export const createPaypalPayment = async (transactionPayload, authToken) => {
 export const createPaypalOrder = async (data, authorization) => {
   try {
     const url = `${PAYPAL_BASE_URL_V2}/checkout/orders`;
-    console.log(data.purchase_units[0].items);
     const response = await axios.post(url, data, {
       headers: {
         "Content-Type": "application/json",
@@ -82,5 +81,39 @@ export const PaypalAuthorizationService = async () => {
 
   } catch(err){
     console.error('Error making POST request:', err.message);
+  }
+}
+
+export const checkPaypalOrderStatus = async (orderId, authorization) => {
+  try {
+    // Step 1: Check the order status
+    const getOrderUrl = `${PAYPAL_BASE_URL_V2}/checkout/orders/${orderId}`;
+    const getOrderResponse = await axios.get(getOrderUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authorization,
+      }
+    });
+    
+    return getOrderResponse;
+
+  } catch (err) {
+    throw new Error('Error checking and capturing PayPal order:', err.message);
+  }
+};
+
+export const capturePaypalOrder = async (orderId, authorization) => {
+  try{
+    const captureUrl = `${PAYPAL_BASE_URL_V2}/checkout/orders/${orderId}/capture`;
+      const captureResponse = await axios.post(captureUrl, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authorization,
+        }
+      });
+      
+      return captureResponse.data;
+  }catch(err){
+    throw new Error(err.message);
   }
 }

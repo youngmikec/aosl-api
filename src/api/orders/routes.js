@@ -1,7 +1,7 @@
 import express from 'express';
 import {
     fetchHandler,
-    createHandler,
+    createOrderHandler,
     updateHandler,
     deleteHandler,
     createPaymentHandler,
@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.get('/orders', [checkAuth], fetchHandler);
 
-router.post('/orders', [checkAuth, isValidAdmin], createHandler);
+router.post('/orders', [checkAuth, isValidAdmin], createOrderHandler);
 router.post('/orders/createInvoice', [checkAuth, isValidAdmin], createInvoiceHandler);
 router.post('/orders/make-payment', createPaymentHandler);
 

@@ -70,7 +70,7 @@ const sendMailService = async (userEmail, subject, message) => {
   }
 };
 
-export async function createService(data) {
+export async function createOrderService(data) {
   const session = await Orders.startSession();
   session.startTransaction({
     readConcern: { level: "snapshot" },
@@ -82,12 +82,12 @@ export async function createService(data) {
 
     const { userDetails, paymentMethod, paymentGateway } = data;
 
-    const userObj = await Users.findById(data.createdBy).exec();
-    if (!userObj)
-      throw new Error(`Cannot perform transaction, this user does not exist.`);
+    // const userObj = await Users.findById(data.createdBy).exec();
+    // if (!userObj)
+    //   throw new Error(`Cannot perform transaction, this user does not exist.`);
 
     const code = await generateModelCode(Orders);
-    data.orderCode = `#AO${code}SL`
+    data.orderCode = `#AO${code}SL`;
 
     const urlLink = `https://aosl-online.com/invoice/${data.orderCode}${paymentGateway ? `?p=${paymentGateway}` : ''}`;
     data.invoiceLink = urlLink;
@@ -97,7 +97,7 @@ export async function createService(data) {
 
     if (!result) throw new Error(`${module} record not found.`);
 
-    const mailResponse = await sendMailService(
+    sendMailService(
       userDetails.email,
       "AOSL Online Payment Invoice Mail",
       paymentInvoiceMailTemplate(result, userDetails, false)
@@ -110,7 +110,7 @@ export async function createService(data) {
     });
 
     //send mail to user upon successful order creation
-    const adminMailResponse = await sendMailService(
+    sendMailService(
       ["promzyluv002@yahoo.com", "admin@aosl-online.com", "michaelozor15@gmail.com"],
       "Order Confirmation Mail",
       paymentInvoiceMailTemplate(result, userDetails, true)

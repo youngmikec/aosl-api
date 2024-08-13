@@ -4,8 +4,9 @@ import {
   createService,
   deleteService,
   fetchPublicService,
-  createOrderService,
+  createInvoiceOrderService,
   updateClientDetailService,
+  confirmAndCaptureOrderService,
 } from './services.js';
 
 
@@ -39,7 +40,16 @@ export const createHandler = async (req, res) => {
 
 export const createOrderHandler = async (req, res) => {
   try {
-    const result = await createOrderService(req);
+    const result = await createInvoiceOrderService(req);
+    return success(res, 201, result);
+  } catch (err) {
+    return fail(res, 400, `${err.message}`)
+  }
+}
+
+export const confirmAndCaptureOrderHandler = async (req, res) => {
+  try {
+    const result = await confirmAndCaptureOrderService(req);
     return success(res, 201, result);
   } catch (err) {
     return fail(res, 400, `${err.message}`)

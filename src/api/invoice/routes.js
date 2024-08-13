@@ -5,7 +5,8 @@ import {
   fetchPublicHandler,
   clientDetailsHandler,
   createOrderHandler,
-  deleteHandler
+  deleteHandler,
+  confirmAndCaptureOrderHandler
 } from './controller.js';
 import { checkAuth, isValidAdmin } from '../../middleware/index.js';
 import { AuthorizePaypal } from '../../middleware/paypal-middleware.js';
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.get('/invoice/publiceRoute', fetchPublicHandler);
 router.get('/invoice/getInvoices', [checkAuth, isValidAdmin], fetchHandler);
+router.get('/invoice/confirmAndCaptureOrder', [AuthorizePaypal], confirmAndCaptureOrderHandler)
 
 router.post('/invoice/createInvoice', [checkAuth, isValidAdmin], createHandler);
 router.post('/invoice/updateInvoiceClientDetails/:recordId', clientDetailsHandler);

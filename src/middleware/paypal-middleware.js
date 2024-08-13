@@ -7,6 +7,7 @@ export const AuthorizePaypal = async (req, res, next) => {
             const { access_token, token_type } = authResponse.data;
             // return the authorization type and token;
             const authString = `${token_type} ${access_token}`;
+            req.headers['accessToken'] = `${authResponse.data.access_token}`
             req.headers['paypalAuthToken'] = `${authResponse.data.token_type} ${authResponse.data.access_token}`
             next();
         }else {

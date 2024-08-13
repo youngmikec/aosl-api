@@ -1,8 +1,11 @@
 import aqp from "api-query-params";
 import { generateCode, generateModelCode, setLimit } from "../../util/index.js";
 import Invoice, { validateClientDetails, validateCreate, validateCreateOrder } from './model.js';
-import { createPaypalOrder } from "../../services/paypal-service.js";
+import { capturePaypalOrder, checkPaypalOrderStatus, createPaypalOrder } from "../../services/paypal-service.js";
 import { PAYPAL } from "../../constant/app-constants.js";
+import { createOrderService } from "../orders/service.js";
+import Orders from "../orders/model.js";
+import { configurePaypalResponseMessage } from "../../util/response.js";
 
 
 const module = 'Invoice';
@@ -108,10 +111,10 @@ export const createService = async (data) => {
   }
 }
 
-export const createOrderService = async (req) => {
+export const createInvoiceOrderService = async (req) => {
   try {
     const data = req.body;
-    const { paypalAuthToken } = req.headers;
+    const { paypalAuthToken, accessToken } = req.headers;
 
     const { error } = validateCreateOrder.validate(data);
     if(error) throw new Error(`${error.message}`);
@@ -159,9 +162,27 @@ export const createOrderService = async (req) => {
 
     if(!orderResponse){
       throw new Error(`Cannot create order`);
-    }
+    };
+
+    // const { payload } = orderResponse.data; 
+
+    // const saveOrderPayload = {
+    //   amount: totalAmount,
+    //   userDetails: {},
+    //   invoiceUrl: joi.string().optional(),
+    //   status: payload.status,
+    //   orderId: payload.id,
+    //   checkoutUrls: payload.links,
+    //   orderCode: generateModelCode(Orders)
+    // }
+
+    // const saveOrderResponse = await createOrderService(saveOrderPayload);
+    // if(!saveOrderResponse){
+    //   console.log('Failed to save order to Db');
+    // }
 
     return {
+      accessToken,
       ...orderResponse.data
     };
 
@@ -169,6 +190,46 @@ export const createOrderService = async (req) => {
     throw new Error(`Error occurred while creating order`)
   }
 }
+
+export const confirmAndCaptureOrderService = async (req) => {
+  try {
+    const { paypalAuthToken } = req.headers;
+    const { orderId } = req.query;
+    
+    const orderStatusResponse = await checkPaypalOrderStatus(orderId, paypalAuthToken);
+    let confirmOrderResponse;
+    if(orderStatusResponse){
+      const { status } = orderStatusResponse.data;
+      if(status === 'APPROVED'){
+        confirmOrderResponse = await capturePaypalOrder(orderId, paypalAuthToken);
+        // update order in local db with the paypal status.
+      }
+      if(status === 'COMPLETED'){
+        // update order and return the response.
+      }
+    }
+    if(confirmOrderResponse){
+      const { id, status, payer } = confirmOrderResponse;
+      return {
+        paypalOrderId: id,
+        orderStatus: status,
+        payer: payer,
+        message: configurePaypalResponseMessage(status, payer)
+      };
+    }else {
+      const { id, status, payer } = orderStatusResponse.data;
+      return {
+        id,
+        status,
+        payer,
+        message: configurePaypalResponseMessage(status, payer)
+      };
+    }
+  }catch(err) {
+    throw new Error(`Error updating Invoice. ${err.message}`);
+  }
+};
+
 
 
 export const updateClientDetailService = async (recordId, data) => {
@@ -185,7 +246,7 @@ export const updateClientDetailService = async (recordId, data) => {
   } catch (err) {
     throw new Error(`Error updating Invoice. ${err.message}`);
   }
-}
+};
 
 
 
@@ -199,4 +260,4 @@ export async function deleteService(recordId) {
   } catch (err) {
       throw new Error(`Error deleting Invoice record. ${err.message}`);
   }
-}
+};
