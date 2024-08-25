@@ -7,12 +7,16 @@ const { ObjectId } = Schema.Types;
 
 export const validateCreate = joi.object({
   services: joi.array().items({
-    serviceId: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
+    // serviceId: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").required(),
     name: joi.string().trim().required(),
     amount: joi.number().required(),
     quantity: joi.number().required(),
     totalAmount: joi.number().required(),
   }).required(),
+  clientName: joi.string().trim().required(),
+  clientEmail: joi.string().trim().required(),
+  clientPhone: joi.string().trim().required(),
+  clientAddress: joi.string().trim().required(),
   tax: joi.number().optional(),
   discount: joi.number().optional(),
   issueDate: joi.date().required(),
@@ -57,7 +61,6 @@ const schema = {
   services: {
     type: [
       {
-        serviceId: { type: ObjectId, ref: "Services", select: true },
         name: { type: String, select: true },
         amount: { type: Number, select: true },
         quantity: { type: Number, select: true },
