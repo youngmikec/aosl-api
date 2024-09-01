@@ -3,7 +3,8 @@ import Users from "../users/model.js";
 import Applications, { validateCreate, validateUpdate, validateUserUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import { uploadImage } from "../../services/upload.js";
-import { APPLICATION } from "../../constant/index.js";
+import { AdminApplicationEmailTemplate, APPLICATION, ApplicationEmailTemplate } from "../../constant/index.js";
+import { sendMailService } from "../../services/send-mail.js";
 
 const module = 'Applications';
 
@@ -110,6 +111,18 @@ export const createService = async (data) => {
         const newRecord = new Applications(data);
         const result = await newRecord.save();
         if(!result) throw new Error(`${module} record not found`);
+
+        await sendMailService(
+            result.email,
+            `Application Received`,
+            ApplicationEmailTemplate(result)
+        );
+
+        await sendMailService(
+            ['info@aosl-online.com', 'admin@aosl-online.com'],
+            `Application Submitted for ${result.role}`,
+            AdminApplicationEmailTemplate(result)
+        );
 
         return result;
 

@@ -195,17 +195,17 @@ export const ENTITY = {
 };
 export const JWT = {
   saltRounds: 2,
-  jwtSecret: "chinos_app-investment_world-pays",
-  tokenExpireTime: "30m",
-  adminTokenExpirationTime: '3h'
+  jwtSecret: "all_occupation_services_world_best",
+  tokenExpireTime: "1m",
+  adminTokenExpirationTime: '5h'
 };
 
 export const SMS = {
-  CHINOS_SMS_SENDER: "+1323649 6765",
+  A0SL_SMS_SENDER: "+447784284117",
 };
 
 export const API = {
-  URL: "https://chinosExchange.com",
+  URL: "https://aosl-online.com",
 };
 
 export const INPUT_TYPE = {

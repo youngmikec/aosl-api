@@ -522,7 +522,64 @@ export const verificationEmail = (userData) => {
     `;
 
     return populateMail(content);
-}
+};
+
+export const ApplicationEmailTemplate = (applicationData) => {
+    const content = `
+        <div>
+            <p>Dear ${applicationData ? `${applicationData.firstName} ${ applicationData.lastName}` : 'Esteemed Applicant'},</p>
+            <br/>
+            <br/>
+
+            <p>Thank you for applying for the 
+                ${applicationData.role || ''} 
+                position at AOSL. 
+                We have received your application and will be reviewing it shortly. If your qualifications match our needs, we will contact you for the next steps.
+            </p>
+
+            <br/>
+            <br/>
+            <p>We appreciate your interest in joining us.</p>
+
+            <br/>
+            <br/>
+
+            <p>Best regards,</P>
+            <p>Promise Osmond</P>
+            <p>CEO</P>
+            <p>AOSL</P>
+        </div>
+    `;
+
+    return populateMail(content);
+};
+
+export const AdminApplicationEmailTemplate = (applicationData) => {
+    const content = `
+        <div>
+            <p>Dear Promise Osmond,</p>
+            <br/>
+            <br/>
+
+            <p>
+                A new application with application code
+                <b>${applicationData.code}</b> has been created. Needs your review and further steps or communication.
+            </p>
+            <br/>
+            <br/>
+
+            <p>Thank you for your consideration.</p>
+
+            <br/>
+            <br/>
+
+            <p>Best regards,</P>
+            <p>Promise Osmond</P>
+        </div>
+    `;
+
+    return populateMail(content);
+};
 
 export const resetPasswordEmail = (user, resetCode) => {
     const content = `

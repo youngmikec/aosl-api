@@ -47,7 +47,7 @@ export const schema = {
   jobImage: {
     type: String,
     select: true,
-    default: "https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg",
+    default: "https://res.cloudinary.com/dixjxrdrg/image/upload/v1725176725/chinos-images/DALL_E_2024-09-01_08.32.32_-_A_simple_elegant_placeholder_image_that_can_be_used_as_a_default_when_an_image_fails_to_load._The_design_should_include_a_neutral_background_with_a_s_foflv7.webp",
   },
   workMode: { 
     type: String, 

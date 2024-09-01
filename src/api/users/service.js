@@ -361,7 +361,7 @@ export const passwordResetCodeService = async (email) => {
     // send password reset code to user
     const mailResponse = await sendMailService(
       email,
-      "Chinos Password Reset Code",
+      "AOSL Password Reset Code",
       resetPasswordEmail(user, resetCode)
     )
       .then((res) => {
@@ -481,17 +481,6 @@ export async function sendOTPService(data) {
         .then()
         .catch((err) => console.log(err.message));
     }
-    // const mailData = {
-    //   recipientEmail: result.email,
-    //   subject: "Chinosexchange Login OTP",
-    //   body: `Use this one-time password to login to your seafood.com account - OTP: ${otp} -CHINOSEXCHANGE`,
-    // };
-    //Uncomment this field as soon as you have integrated mail sending functionality.
-    // if (result.email) {
-    //   Mails.createService(mailData)
-    //     .then()
-    //     .catch((err) => console.log(err.message));
-    // }
     return true;
   } catch (err) {
     throw new Error(`Error sending User record. ${err.message}`);
