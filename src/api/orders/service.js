@@ -2,7 +2,6 @@ import aqp from "api-query-params";
 import { uploadImage } from "../../services/upload.js";
 import { nodeMailerService } from "../../services/node-mailer-service.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
-import Users from "../users/model.js";
 import Orders, {
   validateCreate,
   validateUpdate,
@@ -77,50 +76,40 @@ export async function createOrderService(data) {
     writeConcern: { w: 1 },
   });
   try {
-    const { error } = validateCreate.validate(data);
-    if (error) throw new Error(`Invalid request. ${error.message}`);
 
-    const { userDetails, paymentMethod, paymentGateway } = data;
+    console.log('Order payload', data);
+    // const { error } = validateCreate.validate(data);
+    // if (error) throw new Error(`Invalid request. ${error.message}`);
 
-    // const userObj = await Users.findById(data.createdBy).exec();
-    // if (!userObj)
-    //   throw new Error(`Cannot perform transaction, this user does not exist.`);
+    const { userDetails } = data;
+    console.log('userDetails',  userDetails)
 
     const code = await generateModelCode(Orders);
     data.orderCode = `#AO${code}SL`;
 
-    const urlLink = `https://aosl-online.com/invoice/${data.orderCode}${paymentGateway ? `?p=${paymentGateway}` : ''}`;
-    data.invoiceLink = urlLink;
+    // const urlLink = `https://aosl-online.com/invoice/${data.orderCode}${paymentGateway ? `?p=${paymentGateway}` : ''}`;
+    // data.invoiceLink = urlLink;
 
     const newOrder = new Orders(data);
     const result = await newOrder.save();
 
     if (!result) throw new Error(`${module} record not found.`);
-
-    sendMailService(
-      userDetails.email,
-      "AOSL Online Payment Invoice Mail",
-      paymentInvoiceMailTemplate(result, userDetails, false)
-    )
-    .then((res) => {
-      console.log("mail sent successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-    //send mail to user upon successful order creation
-    sendMailService(
-      ["promzyluv002@yahoo.com", "admin@aosl-online.com", "michaelozor15@gmail.com"],
-      "Order Confirmation Mail",
-      paymentInvoiceMailTemplate(result, userDetails, true)
-    )
-    .then((res) => {
-      console.log("mail sent successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    // if(userDetails && userDetails.email){
+    //   await sendMailService(
+    //     userDetails.email,
+    //     "AOSL Payment Order",
+    //     paymentInvoiceMailTemplate(result, userDetails, false)
+    //   );
+    // }
+    
+    // //send mail to user upon successful order creation
+    // if(userDetails && userDetails.email){
+    //   await sendMailService(
+    //     ["promzyluv002@yahoo.com", "admin@aosl-online.com", "michaelozor15@gmail.com"],
+    //     "Order Confirmation Mail",
+    //     paymentInvoiceMailTemplate(result, userDetails, true)
+    //   );
+    // }
 
     session.commitTransaction();
     session.endSession();

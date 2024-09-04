@@ -284,8 +284,8 @@ export const GIFTCARD = {
 export const INVOICE = {
   STATUS: {
     PENDING: "PENDING",
-    APPROVED: "APPROVED",
-    BLOCKED: "BLOCKED",
+    PAID: "PAID",
+    UNPAID: "UNPAID",
     DELETED: "DELETED",
   },
   TAX: 0,

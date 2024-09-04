@@ -60,18 +60,20 @@ export const validateCreateOrderInvoice = joi.object({
 export const validateCreate = joi.object({
   amount: joi.number().required(),
   userDetails: joi.object({
-    firstName: joi.string().trim().required(),
-    lastName: joi.string().trim().required(),
-    email: joi.string().email().required(),
-    phoneNumber: joi.string().trim().required(),
-    address: joi.string().required(),
+    firstName: joi.string().trim().optional(),
+    lastName: joi.string().trim().optional(),
+    email: joi.string().email().optional(),
+    phoneNumber: joi.string().trim().optional(),
+    address: joi.string().optional(),
   }).optional(),
   checkoutUrls: joi.array().items({
-    href: joi.string().required(),
-    rel: joi.string().required(),
-    method: joi.string().required()
+    href: joi.string().optional(),
+    rel: joi.string().optional(),
+    method: joi.string().optional()
   }).optional(),
   invoiceUrl: joi.string().optional(),
+  invoiceCode: joi.string().optional(),
+  invoice: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
   status: joi.string().optional(),
   orderId: joi.string().required(),
   orderCode: joi.string().required(),
@@ -131,12 +133,13 @@ export const schema = {
   orderCode: { type: String, trim: true, select: true },
   amount: { type: Number, required: true, select: true },
   userDetails: {
-    firstName: { type: String, trim: true, select: true },
-    lastName: { type: String, trim: true, select: true },
+    name: { type: String, trim: true, select: true },
     email: { type: String, trim: true, select: true },
     phoneNumber: { type: String, trim: true, select: true },
     address: { type: String, trim: true, select: true },
   },
+  payer: { type: Object, select: true },
+  invoiceUrl: { type: String, select: true },
   invoiceUrl: { type: String, select: true },
   status: {
     type: String,
@@ -144,6 +147,7 @@ export const schema = {
     select: true,
   },
 
+  invoice: { type: ObjectId, ref: "Invoice", select: true },
   createdBy: { type: ObjectId, ref: "Users", select: true },
   approvedBy: { type: ObjectId, ref: "Users", select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },

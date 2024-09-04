@@ -88,7 +88,7 @@ const schema = {
   currency: { type: String, select: true, default: INVOICE.CURRENCY.GBP },
   paymentMethod: {type: String, select: true, default: PAYMENT.PAYMENT_METHOD.GATEWAY},
   paymentGateway: { type: String, select: true, default: PAYMENT.GATEWAY.PAYPAL},
-
+  paymentOrder: { type: ObjectId, ref: 'Orders', select: true },
   createdBy: { type: ObjectId, ref: "Users", required: true, select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },
   deleted: { type: Boolean, default: false, select: false },

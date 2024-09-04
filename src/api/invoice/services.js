@@ -2,7 +2,7 @@ import aqp from "api-query-params";
 import { generateCode, generateModelCode, setLimit } from "../../util/index.js";
 import Invoice, { validateClientDetails, validateCreate, validateCreateOrder } from './model.js';
 import { capturePaypalOrder, checkPaypalOrderStatus, createPaypalOrder } from "../../services/paypal-service.js";
-import { PAYPAL } from "../../constant/app-constants.js";
+import { PAYPAL, INVOICE } from "../../constant/app-constants.js";
 import { createOrderService } from "../orders/service.js";
 import Orders from "../orders/model.js";
 import { configurePaypalResponseMessage } from "../../util/response.js";
@@ -119,7 +119,7 @@ export const createInvoiceOrderService = async (req) => {
     const { error } = validateCreateOrder.validate(data);
     if(error) throw new Error(`${error.message}`);
 
-    const { purchaseItems, totalAmount, currency_code } = data;
+    const { purchaseItems, totalAmount, currency_code, invoiceCode } = data;
 
     const orderCode = generateCode(5);
     const orderPayload = {
@@ -159,27 +159,48 @@ export const createInvoiceOrderService = async (req) => {
     }
 
     const orderResponse = await createPaypalOrder(orderPayload, paypalAuthToken);
-
+    
     if(!orderResponse){
       throw new Error(`Cannot create order`);
     };
+    
+    // Update invoice status with 
+    const updatedInvoice = await Invoice.findOneAndUpdate({ invoiceCode }, { status: INVOICE.STATUS.PAID }).exec();
+    if(!updatedInvoice){
+      console.log('Error occured while updating invoice record');
+    }
+    
+    const payload = orderResponse.data; 
 
-    // const { payload } = orderResponse.data; 
+    const saveOrderPayload = {
+      userDetails: {
+        email: updatedInvoice.clientEmail,
+        name: updatedInvoice.clientName,
+        phoneNumber: updatedInvoice.clientPhone,
+        address: updatedInvoice.clientAddress
+      },
+      amount: totalAmount,
+      invoiceUrl: data.invoiceUrl,
+      status: payload.status,
+      orderId: payload.id,
+      checkoutUrls: payload.links,
+      invoice: updatedInvoice._id,
+      // orderCode: generateModelCode(Orders)
+    };
 
-    // const saveOrderPayload = {
-    //   amount: totalAmount,
-    //   userDetails: {},
-    //   invoiceUrl: joi.string().optional(),
-    //   status: payload.status,
-    //   orderId: payload.id,
-    //   checkoutUrls: payload.links,
-    //   orderCode: generateModelCode(Orders)
-    // }
+    console.log('got here1');
 
-    // const saveOrderResponse = await createOrderService(saveOrderPayload);
-    // if(!saveOrderResponse){
-    //   console.log('Failed to save order to Db');
-    // }
+    const saveOrderResponse = await createOrderService(saveOrderPayload);
+    if(!saveOrderResponse){
+      console.log('Failed to save order to Db');
+    }
+
+    // Update invoice with order Id 
+    const savedResponse = await Invoice.findOneAndUpdate({ invoiceCode }, { paymentOrder: saveOrderResponse._id }).exec();
+    if(!savedResponse){
+      console.log('Error occured while updating invoice record with order Id');
+    }
+
 
     return {
       accessToken,
@@ -203,9 +224,21 @@ export const confirmAndCaptureOrderService = async (req) => {
       if(status === 'APPROVED'){
         confirmOrderResponse = await capturePaypalOrder(orderId, paypalAuthToken);
         // update order in local db with the paypal status.
+        const payload = { 
+          status: 'APPROVED',
+          payer: confirmOrderResponse.payer
+        };
+        const savedResponse = await Orders.findOneAndUpdate({ orderId }, {...payload}).exec();
+        if(!savedResponse){
+          console.log('Error occured while updating order status')
+        }
       }
       if(status === 'COMPLETED'){
         // update order and return the response.
+        const savedResponse = await Orders.findOneAndUpdate({ orderId }, { status: 'COMPLETED'}).exec();
+        if(!savedResponse){
+          console.log('Error occured while updating order status')
+        }
       }
     }
     if(confirmOrderResponse){
