@@ -13,15 +13,18 @@ import reportsRoute from "./report/index.js";
 import subscribersRoute from "./subscribers/index.js";
 import newsletterRoute from "./newsletter/index.js";
 import cryptocurrencyRoute from "./cryptocurrency/index.js";
+import blogRoute from './blog/index.js';
+import commentRoute from './comment/index.js';
 
 const router = express.Router();
 
 router.use(jobRoute);
 router.use(applicationRoute);
 router.use(chatRoute);
+router.use(commentRoute);
 router.use(productServiceRoute);
 
-
+router.use(blogRoute);
 router.use(userRoute);
 router.use(bankRoute);
 router.use(ordersRoute);

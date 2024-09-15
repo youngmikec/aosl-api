@@ -93,6 +93,8 @@ export const createService = async (data) => {
   try {
     const { error } = validateCreate.validate(data);
     if (error) throw new Error(`${error.message}`);
+    const { clientEmail, clientName, clientPhone } = data;
+
     const code = await generateModelCode(Invoice);
     if(!code){
       throw new Error(`Error generating code`);
@@ -103,8 +105,23 @@ export const createService = async (data) => {
     const newInvoice = new Invoice(data);
     const result = await newInvoice.save();
     if (!result) throw new Error(`${module} record not found`);
-    return result;
 
+
+    // send mail to user.
+    await sendMailService(
+      result.email,
+      `Application Received`,
+      ApplicationEmailTemplate(result)
+    );
+
+    // Send mail to admin.
+    await sendMailService(
+      ['info@aosl-online.com', 'admin@aosl-online.com'],
+      `Application Submitted for ${result.role}`,
+      AdminApplicationEmailTemplate(result)
+    );
+
+    return result;
 
   } catch (err) {
     throw new Error(`Error creating Invoice. ${err.message}`);
@@ -119,7 +136,12 @@ export const createInvoiceOrderService = async (req) => {
     const { error } = validateCreateOrder.validate(data);
     if(error) throw new Error(`${error.message}`);
 
-    const { purchaseItems, totalAmount, currency_code, invoiceCode } = data;
+    const { purchaseItems, totalAmount, currency_code, invoiceCode, clientEmail } = data;
+
+    // Get the invoice record and check if the due date has expired.
+    // If the due has passed throw an error to notify the user to contact admin for a new invoice.
+    // Send mail to the user to contact admin to generate a new invoice.
+  
 
     const orderCode = generateCode(5);
     const orderPayload = {
@@ -187,8 +209,6 @@ export const createInvoiceOrderService = async (req) => {
       invoice: updatedInvoice._id,
       // orderCode: generateModelCode(Orders)
     };
-
-    console.log('got here1');
 
     const saveOrderResponse = await createOrderService(saveOrderPayload);
     if(!saveOrderResponse){

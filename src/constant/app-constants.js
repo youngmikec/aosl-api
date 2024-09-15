@@ -281,6 +281,14 @@ export const GIFTCARD = {
   },
 };
 
+export const BLOG = {
+  STATUS: {
+    DRAFT: 'DRAFT',
+    PUBLISHED: 'PUBLISHED',
+    UNPUBLISHED: 'UNPUBLISHED'
+  }
+}
+
 export const INVOICE = {
   STATUS: {
     PENDING: "PENDING",
