@@ -6,6 +6,8 @@ import { PAYPAL, INVOICE } from "../../constant/app-constants.js";
 import { createOrderService } from "../orders/service.js";
 import Orders from "../orders/model.js";
 import { configurePaypalResponseMessage } from "../../util/response.js";
+import { UserInvoiceEmailTemplate } from "../../constant/email-templates.js";
+import { sendMailService } from "../../services/send-mail.js";
 
 
 const module = 'Invoice';
@@ -109,16 +111,16 @@ export const createService = async (data) => {
 
     // send mail to user.
     await sendMailService(
-      result.email,
-      `Application Received`,
-      ApplicationEmailTemplate(result)
+      result.clientEmail,
+      `AOSL Service Request Invoice`,
+      UserInvoiceEmailTemplate(result, 'user')
     );
 
     // Send mail to admin.
     await sendMailService(
       ['info@aosl-online.com', 'admin@aosl-online.com'],
-      `Application Submitted for ${result.role}`,
-      AdminApplicationEmailTemplate(result)
+      `Invoice For ${result.clientName} Service Request`,
+      UserInvoiceEmailTemplate(result, 'admin')
     );
 
     return result;

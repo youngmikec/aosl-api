@@ -581,6 +581,110 @@ export const AdminApplicationEmailTemplate = (applicationData) => {
     return populateMail(content);
 };
 
+export const UserInvoiceEmailTemplate = (InvoiceData, userType = 'user') => {
+    const content = `
+        <div>
+            ${
+                userType === 'user' ?
+                `
+                <h1>Dear ${InvoiceData.clientName ? InvoiceData.clientName : 'Valued customer'}, </h1>
+                ` :
+                `
+                <h1>Dear Admin, </h1>
+                `
+            }
+            <br/>
+            ${
+                userType === 'user' ?
+                `
+                <p>Thanks for using AOSL, this is an invoice for your recent request</p>
+                ` :
+                `
+                <p>An Invoice has been created for ${InvoiceData.clientName} with the invoice code <b>${InvoiceData.code}</b>. </p>
+                `
+            }
+
+            <br/>
+            <div style="background: rgb(243, 244, 246); padding: 10px; border-radius: 8px; width: 100%; min-height: 50px; margin: 5px auto;">
+                <p>
+                    <b>Amount Due:</b>
+                    <span>${InvoiceData.totalAmount}</span>
+                </p>
+                <p>
+                    <b>Due by:</b>
+                    <span>${InvoiceData.dueDate}</span>
+                </p>
+            </div>
+
+            <br/>
+            <div style="display: flex; justify-content: center; width: 100%;">
+                <a 
+                    href="https://aosl-online.com/invoice/${InvoiceData.invoiceCode}"
+                    target="_blank"
+                    style="background-color: #042f9c; color: white: text-decoration: none; border-radius: 8px; padding: 0.5rem 1rem; text-align: center"
+                >
+                    Pay now
+                </a>
+            </div>
+
+            <br/>
+            <div style="display: flex: justify-content: space-between;">
+                <h1>${InvoiceData.invoiceCode}</h1>
+                <h1>${InvoiceData.issueDate}</h1>
+            </div>
+
+            <br/>
+            <div style="display: flex: justify-content: space-between;">
+                <p>Description</p>
+                <p>Amount</p>
+            </div>
+            <hr/>
+
+            <div>
+                ${
+                    InvoiceData.services.map((service) => (
+                    `   <br/>
+                            <div style="display: flex; justify-content: space-between;">
+                                <p>${service.name}</p>
+                                <p>${service.totalAmount}</p>
+                            </div>
+                        <hr/>
+                        `
+                    ))
+                }
+            </div>
+
+            <br/>
+            <div style="display: flex: justify-content: space-between;">
+                <p>Total</p>
+                <p>${InvoiceData.totalAmount}</p>
+            </div>
+
+            <br/>
+            <p>
+                If you have any question or concern about this invoice, simply send a mail to this email or reach out to our support team through our support channesl.
+                Visit <a href="https://aosl-online.com/contact-us" target="_blank">www.aosl-online.com</a>
+            </p>
+
+            <br/>
+            <br/>
+            <p>Cheers,</p>
+            <p>From us @ AOSL Team.</p>
+
+            <br/>
+            <hr/>
+            <br/>
+
+            <p>
+                If you are having an issue with the button above, 
+                click <a href="https://aosl-online.com/invoice/${InvoiceData.invoiceCode}" target="_blank">here</a> to proceed to payment.
+            </p>
+
+        </div>
+    `;
+    return populateMail(content);
+}
+
 export const resetPasswordEmail = (user, resetCode) => {
     const content = `
         <p>
