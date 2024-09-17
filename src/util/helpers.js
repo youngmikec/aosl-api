@@ -25,6 +25,28 @@ export function getLoginType(data) {
   return loginType;
 }
 
+export function formatDate(date) {
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+
+  // Add suffix to day
+  const dayWithSuffix = getDayWithSuffix(day);
+
+  return `${dayWithSuffix} ${month} ${year}`;
+}
+
+function getDayWithSuffix(day) {
+  // Determine the appropriate suffix for the day
+  if (day > 3 && day < 21) return `${day}th`; // covers 11th to 20th
+  switch (day % 10) {
+    case 1: return `${day}st`;
+    case 2: return `${day}nd`;
+    case 3: return `${day}rd`;
+    default: return `${day}th`;
+  }
+}
+
 
 /**
   Function that takes in a text and converts it into a slug format by replacing spaces with hyphens.

@@ -1,5 +1,6 @@
 import moment from "moment";
 import dotenv from 'dotenv';
+import { formatDate } from "../util/index.js";
 dotenv.config();
 
 
@@ -19,7 +20,7 @@ const populateMail = (content) => {
                         
                         .main-content {
                             background-color: #ffffff;
-                            width: 40%;
+                            width: 50%;
                             margin: 1rem auto;
                             padding: .5rem;
                             min-height: 150px;
@@ -67,6 +68,33 @@ const populateMail = (content) => {
                             font-weight: 500;
                         }
 
+                        .linkButton {
+                            background: blue !important;
+                            padding: 0.5rem 2rem !important;
+                            color: white !important;
+                            border-radius: 6px !important;
+                            text-decoration: none !important;
+                            text-align: center !important;
+                        }
+                        
+                        .flex-center {
+                            width: 30% !important;
+                            margin: 0px auto 0px auto !important;
+                        }
+
+                        .flex-between {
+                            display: flex !important;
+                            justify-content: space-between !important;
+                        }
+                        
+                        .box-container {
+                            background: rgb(243, 244, 246) !important; 
+                            padding: 10px !important; 
+                            border-radius: 8px !important; 
+                            min-height: 50px !important; 
+                            margin: 5px auto !important;
+                        }
+
                         @media screen and (max-width: 600px) {
                             .main-content {
                                 width: 80% !important;
@@ -87,6 +115,11 @@ const populateMail = (content) => {
                             
                             table, tr, th, td{
                                 font-size: 12px;
+                            }
+
+                            .flex-center {
+                                width: 50% !important;
+                                margin: 0px auto 0px auto !important;
                             }
                         }
                     
@@ -114,7 +147,7 @@ const populateMail = (content) => {
                                     padding: 1rem 0;
                                 "
                             >
-                                <img src="https://aosl-online.com/wp-content/uploads/2024/01/LOGO-W.png" width="100px" height="40px" alt="logo" style="margin: 0 auto;" />
+                                <img src="https://aosl-online.com/static/media/logo-white.db7e14036e9ce6fce09b.png" width="100px" height="40px" alt="logo" style="margin: 0 auto;" />
                             </div>
 
                             <style>
@@ -587,78 +620,92 @@ export const UserInvoiceEmailTemplate = (InvoiceData, userType = 'user') => {
             ${
                 userType === 'user' ?
                 `
-                <h1>Dear ${InvoiceData.clientName ? InvoiceData.clientName : 'Valued customer'}, </h1>
+                <p>Dear ${InvoiceData.clientName ? InvoiceData.clientName : 'Valued customer'}, </p>
                 ` :
                 `
-                <h1>Dear Admin, </h1>
+                <p>Dear Admin, </p>
                 `
             }
-            <br/>
             ${
                 userType === 'user' ?
                 `
                 <p>Thanks for using AOSL, this is an invoice for your recent request</p>
                 ` :
                 `
-                <p>An Invoice has been created for ${InvoiceData.clientName} with the invoice code <b>${InvoiceData.code}</b>. </p>
+                <p>An Invoice has been created for ${InvoiceData.clientName} with the invoice code <b>${InvoiceData.invoiceCode}</b>. </p>
                 `
             }
 
             <br/>
-            <div style="background: rgb(243, 244, 246); padding: 10px; border-radius: 8px; width: 100%; min-height: 50px; margin: 5px auto;">
+            <div class="box-container">
                 <p>
                     <b>Amount Due:</b>
                     <span>${InvoiceData.totalAmount}</span>
                 </p>
                 <p>
                     <b>Due by:</b>
-                    <span>${InvoiceData.dueDate}</span>
+                    <span>${formatDate(InvoiceData.dueDate)}</span>
                 </p>
             </div>
 
             <br/>
-            <div style="display: flex; justify-content: center; width: 100%;">
+            <div class="flex-center">
                 <a 
                     href="https://aosl-online.com/invoice/${InvoiceData.invoiceCode}"
                     target="_blank"
-                    style="background-color: #042f9c; color: white: text-decoration: none; border-radius: 8px; padding: 0.5rem 1rem; text-align: center"
+                    class="linkButton"
                 >
                     Pay now
                 </a>
             </div>
 
             <br/>
-            <div style="display: flex: justify-content: space-between;">
-                <h1>${InvoiceData.invoiceCode}</h1>
-                <h1>${InvoiceData.issueDate}</h1>
-            </div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: black;">
+                        <b>${InvoiceData.invoiceCode}</b>
+                    </td>
+                    <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: black; text-align: right;">
+                        <b>${formatDate(InvoiceData.issueDate)}</b>
+                    </td>
+                </tr>
+            </table>
 
             <br/>
-            <div style="display: flex: justify-content: space-between;">
-                <p>Description</p>
-                <p>Amount</p>
-            </div>
-            <hr/>
-
-            <div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr style="border-bottom: 1px solid #9f9c9c;">
+                    <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: #9f9c9c;">
+                        Description
+                    </td>
+                    <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: #9f9c9c; text-align: right">
+                        Amount (${InvoiceData ? InvoiceData.currency : 'GBP' })
+                    </td>
+                </tr>
                 ${
                     InvoiceData.services.map((service) => (
-                    `   <br/>
-                            <div style="display: flex; justify-content: space-between;">
-                                <p>${service.name}</p>
-                                <p>${service.totalAmount}</p>
-                            </div>
-                        <hr/>
-                        `
+                    `   
+                        <tr style="border-bottom: 1px solid #9f9c9c;">
+                            <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: #9f9c9c;">
+                                ${service.name}
+                            </td>
+                            <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: #9f9c9c; text-align: right;">
+                                ${service.totalAmount}
+                            </td>
+                        </tr>
+                    `
                     ))
                 }
-            </div>
+            
+                <tr>
+                    <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: black;">
+                        Total
+                    </td>
+                    <td style="padding: 10px 0 10px 0; margin: 0; width: 50%; color: black; text-align: right;">
+                        ${InvoiceData.totalAmount || 0} (${InvoiceData ? InvoiceData.currency : 'GBP' })
+                    </td>
+                </tr>
+            </table>
 
-            <br/>
-            <div style="display: flex: justify-content: space-between;">
-                <p>Total</p>
-                <p>${InvoiceData.totalAmount}</p>
-            </div>
 
             <br/>
             <p>
@@ -667,11 +714,8 @@ export const UserInvoiceEmailTemplate = (InvoiceData, userType = 'user') => {
             </p>
 
             <br/>
-            <br/>
             <p>Cheers,</p>
             <p>From us @ AOSL Team.</p>
-
-            <br/>
             <hr/>
             <br/>
 
