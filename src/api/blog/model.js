@@ -46,7 +46,7 @@ const { ObjectId } = Schema.Types;
 
 export const validateCreateBlog = joi.object({
     title: joi.string().trim().min(4).required(),
-    subTitle: joi.string().trim().min(4).required(),
+    subTitle: joi.string().trim().min(4).optional(),
     content: joi.string().required(),
     author: joi
     .string()
@@ -64,6 +64,7 @@ export const validateCreateBlog = joi.object({
         url: joi.string().required()
     }).optional(),
     status: joi.string().trim().valid(...Object.values(BLOG.STATUS)).required(),
+    category: joi.string().trim().valid(...Object.values(BLOG.CATEGORY)).required(),
     tags: joi.array()
     .items(
         joi.string().required()
@@ -89,6 +90,7 @@ export const validateUpdateBlog = joi.object({
         url: joi.string().required()
     }).optional(),
     status: joi.string().trim().valid(...Object.values(BLOG.STATUS)).optional(),
+    category: joi.string().trim().valid(...Object.values(BLOG.CATEGORY)).optional(),
     tags: joi.array()
     .items(
         joi.string().required()
@@ -117,6 +119,7 @@ const schema = {
     subTitle: { type: String, select: true },
     code: { type: String, required: true, unique: true },
     content: { type: String, required: true, select: true },
+    category: { type: String, enum: Object.values(BLOG.CATEGORY), required: true, select: true },
     author: { type: ObjectId, ref: 'Users', required: true, select: true },
     status: { type: String, enum: Object.values(BLOG.STATUS), default: BLOG.STATUS.DRAFT, select: true},
     tags: [{ type: String }],
