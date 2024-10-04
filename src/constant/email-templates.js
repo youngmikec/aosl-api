@@ -557,6 +557,25 @@ export const verificationEmail = (userData) => {
     return populateMail(content);
 };
 
+
+export const ContactAdminEmailTemplate = ({fullName, phone, email, message}) => {
+    const content = `
+        <p>Dear Admin, you just received an email from a client with the following details. Pls, Kindly attend to their request.</p>
+        <br/>
+        <p>Name: ${fullName}</p>
+        <p>Phone: ${phone}</p>
+        <p>Email: ${email}</p>
+
+        <br/>
+        <p>
+            <b>Message</b>
+        </p>
+        <p>${message}</p>
+    `;
+
+    return populateMail(content);
+};
+
 export const ApplicationEmailTemplate = (applicationData) => {
     const content = `
         <div>

@@ -2,6 +2,7 @@ import aqp from "api-query-params";
 import Mails, { validateCreate, validateUpdate } from "./model.js";
 import { generateModelCode, setLimit } from "../../util/index.js";
 import { nodeMailerService } from "../../services/node-mailer-service.js";
+import { ContactAdminEmailTemplate } from "../../constant/email-templates.js";
 
 const module = "Mails";
 
@@ -62,14 +63,18 @@ export const createService = async (data) => {
     if (error) throw new Error(`${error.message}`);
 
     data.code = await generateModelCode(Mails);
-    const { email, subject, message } = data;
+    const { email, subject, message, fullName, phone } = data;
 
     // send mail to user upon successful account creation
-    const response = await SendMailService(email, subject, message);
+    // await SendMailService(email, subject, message);
+    const adminMailPayload = {fullName, phone, email, message}
 
-    if(response && response.error){
-      throw new Error(response.error.message);
-    }
+    // Send mail to admin.
+    await SendMailService(
+      ['info@aosl-online.com', 'admin@aosl-online.com'],
+      subject,
+      ContactAdminEmailTemplate(adminMailPayload)
+    );
 
     const newRecord = new Mails(data);
     const result = await newRecord.save();
