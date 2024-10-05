@@ -1,5 +1,6 @@
 import aqp from "api-query-params";
 import Users from "../users/model.js";
+import { uploadImage } from "../../services/upload.js";
 import { generateModelCode, setLimit, slugifyText } from "../../util/index.js";
 import Blog, { validateCreateBlog, validateUpdateBlog, validatePublishData, validateLikePost } from "./model.js";
 
