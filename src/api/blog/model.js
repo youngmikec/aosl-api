@@ -48,6 +48,7 @@ export const validateCreateBlog = joi.object({
     title: joi.string().trim().min(4).required(),
     subTitle: joi.string().trim().min(4).optional(),
     content: joi.string().required(),
+    coverImage: joi.string().required(),
     author: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
@@ -74,6 +75,7 @@ export const validateCreateBlog = joi.object({
 export const validateUpdateBlog = joi.object({
     title: joi.string().trim().min(4).optional(),
     content: joi.string().optional(),
+    coverImage: joi.string().optional(),
     author: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
@@ -118,6 +120,7 @@ const schema = {
     title: { type: String, required: true, select: true },
     subTitle: { type: String, select: true },
     code: { type: String, required: true, unique: true },
+    coverImage: { type: String, required: true, select: true },
     content: { type: String, required: true, select: true },
     category: { type: String, enum: Object.values(BLOG.CATEGORY), required: true, select: true },
     author: { type: ObjectId, ref: 'Users', required: true, select: true },

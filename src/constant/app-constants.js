@@ -297,7 +297,8 @@ export const BLOG = {
     LIFESTYLE: 'LIFESTYLE',
     BUSSINESS: 'BUSINESS',
     FASHION: 'FASHION',
-    TRAVEL: 'TRAVEL'
+    TRAVEL: 'TRAVEL',
+    GENERAL: 'GENERAL'
   }
 }
 

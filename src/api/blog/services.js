@@ -92,15 +92,15 @@ export const createService = async (data) => {
         const { error } = validateCreateBlog.validate(data);
         if(error) throw new Error(`${error.message}`);
 
-        let { media, title } = data;
+        let { coverImage, title } = data;
         
         // Run the create media service to create blog post media.
-        // if(media){
-        //   const uploadResult = await uploadImage(resume);
-        //   data.media = uploadResult.url;
-        // }else {
-        //   console.log('no resume image found');
-        // }
+        if(coverImage){
+          const uploadResult = await uploadImage(coverImage);
+          data.coverImage = uploadResult.url;
+        }else {
+          console.log('no coverImage image found');
+        }
         data.slug = slugifyText(title);
 
         const returnedBlog = await Blog.findOne({slug: data.slug}).exec();
