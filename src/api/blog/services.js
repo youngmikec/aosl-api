@@ -170,6 +170,8 @@ export async function updateService(recordId, data, user) {
             throw new Error(`Invalid request. ${error.message}`);
         }
 
+        let { coverImage } = data;
+
         const returnedBlog = await Blog.findById(recordId).exec();
         if (!returnedBlog) throw new Error(`${module} record not found.`);
         if (`${returnedBlog.createdBy}` !== user.id || (user.userType !== 'ADMIN')) {
@@ -178,6 +180,14 @@ export async function updateService(recordId, data, user) {
 
         if(returnedBlog.title !== data.title){
             data.slug = slugifyText(data.title);
+        }
+
+        // Run the create media service to create blog post media.
+        if(coverImage && !coverImage.includes('cloudinary.com')){
+            const uploadResult = await uploadImage(coverImage);
+            data.coverImage = uploadResult.url;
+        }else {
+            console.log('no coverImage image found');
         }
 
         // const { media } = data;

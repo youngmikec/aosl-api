@@ -74,6 +74,7 @@ export const validateCreateBlog = joi.object({
 
 export const validateUpdateBlog = joi.object({
     title: joi.string().trim().min(4).optional(),
+    subTitle: joi.string().trim().min(4).optional(),
     content: joi.string().optional(),
     coverImage: joi.string().optional(),
     author: joi
