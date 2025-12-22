@@ -15,8 +15,8 @@ export async function sendMail(senderEmail, recipientEmail, subject, message){
     let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'stmp.gmail.com',
-        port: process.env.SMTP_PORT || 465,
+        host: 'smtp.gmail.com',
+        port: 465,
         secure: true,
         auth: {
             user: process.env.SMTP_USER,
