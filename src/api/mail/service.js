@@ -67,11 +67,11 @@ export const createService = async (data) => {
 
     // send mail to user upon successful account creation
     // await SendMailService(email, subject, message);
-    const adminMailPayload = {fullName, phone, email, message}
+    const adminMailPayload = { fullName, phone, email, message }
 
     // Send mail to admin.
     await SendMailService(
-      ['info@aosl-online.com', 'admin@aosl-online.com'],
+      [email, 'info@aosl-online.com', 'admin@aosl-online.com'],
       subject,
       ContactAdminEmailTemplate(adminMailPayload)
     );
