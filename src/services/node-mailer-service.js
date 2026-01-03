@@ -13,24 +13,6 @@ let transporter = nodemailer.createTransport({
 
 
 export const nodeMailerService = async (senderEmail, recipientEmails, subject, message, attachments) => {
-    // const joinedRecipients = recipientEmails.length > 1 ? recipientEmails.join(',') : recipientEmails[0];
-    // const mailOptions = {
-    //     from: `"All Occupation Services Ltd" <${senderEmail}>`, // sender address
-    //     to: `${joinedRecipients}`, // list of receivers
-    //     subject: `${subject}`, // Subject line
-    //     // text: "Hello world?", // plain text body
-    //     html: `<b>${message}</b>`, // html body
-    // };
-    
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //     if (error) {
-    //         console.log('Error occurred: ', error.message);
-    //         return error.message;
-    //     }
-    //     console.log('Email sent: ' + info.response);
-    //     return info.response;
-    // })
-
   const joinedRecipientEmails = recipientEmails.length > 1 ? recipientEmails.join(',') : recipientEmails[0];
   const serverHost = 'smtp.gmail.com';
   // eslint-disable-next-line @typescript-eslint/no-var-requires
