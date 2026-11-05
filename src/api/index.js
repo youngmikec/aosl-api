@@ -15,6 +15,7 @@ import newsletterRoute from "./newsletter/index.js";
 import cryptocurrencyRoute from "./cryptocurrency/index.js";
 import blogRoute from './blog/index.js';
 import commentRoute from './comment/index.js';
+import faqRoute from './faq/index.js';
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.use(jobRoute);
 router.use(applicationRoute);
 router.use(chatRoute);
 router.use(commentRoute);
+router.use(faqRoute);
 router.use(productServiceRoute);
 
 router.use(blogRoute);

@@ -10,6 +10,8 @@ import Users, {
   validateVerifyEmail,
   validateForgortPassword,
   validateVerifyResetCode,
+  validateChangePassword,
+  validateResendCode,
 } from "./model.js";
 // import Otp from "../otp/model";
 import {
@@ -23,7 +25,7 @@ import { JWT, USER_TYPE } from "../../constant/index.js";
 import { nodeMailerService } from "../../services/node-mailer-service.js";
 import { uploadImage } from "../../services/upload.js";
 import { resetPasswordEmail, verificationEmail } from '../../constant/email-templates.js'
-import ChatRoom from "../chat/chat-room-model.js";
+import { ensureSupportRoom } from "../chat/services.js";
 
 dotenv.config();
 const module = "Users";
@@ -97,6 +99,10 @@ export const loginService = async (loginPayload) => {
 
     if (user.userType != usersType) {
       throw new Error("Error Login! User type mistach.");
+    }
+
+    if (user.isSuspended) {
+      throw new Error("This account has been suspended. Please contact support.");
     }
 
     if (
@@ -233,19 +239,17 @@ export async function createService(data) {
       throw new Error(`User record not found.`);
     }
 
-    const admins = await Users.find({userType: "ADMIN"}).exec();
-    let newChatRoom;
-    if(admins.length > 0){
-      const chatRoomPayload = {
-        name: `${data.firstName} ${data.lastName}`,
-        members: [...admins.map(admin => admin._id), result._id],
+    // Every customer gets exactly one support conversation, visible to them and to admins only.
+    // Customers get it even when no admin exists yet (admins see it by role, not by membership).
+    if (result.userType !== "ADMIN") {
+      try {
+        const room = await ensureSupportRoom(result);
+        result = await Users.findById(result.id).exec() || result;
+        if (!result.chatRoom) result.chatRoom = room.id;
+      } catch (chatErr) {
+        // Registration must not fail because the chat room could not be created; it is created on first chat use.
+        console.log("support room not created at registration:", chatErr.message);
       }
-      const response = new ChatRoom(chatRoomPayload);
-      newChatRoom = await response.save();  
-    }
-
-    if(newChatRoom){
-      result = await Users.findOneAndUpdate({_id: result.id}, {chatRoom: newChatRoom._id}, {new: true});
     }
 
     //send mail to user upon successful account creation
@@ -553,3 +557,44 @@ export async function updatePinService(wallet, data, user) {
     throw new Error(`Pin update service: ${err.message}`);
   }
 }
+
+
+// Sends the original 5-character verification code again. The response is the same whether or not the
+// email exists, so the endpoint cannot be used to discover which addresses are registered.
+export const resendVerificationCodeService = async (data) => {
+  try {
+    const { error } = validateResendCode.validate(data);
+    if (error) throw new Error(`${error.message}`);
+
+    const user = await Users.findOne({ email: data.email, deleted: 0 }).exec();
+    if (user && user.isVerified) throw new Error(`This account is already verified. Please sign in.`);
+    if (user && user.code) {
+      await sendMailService(user.email, "Account Verification mail", verificationEmail(user));
+    }
+    return { email: data.email };
+  } catch (err) {
+    throw new Error(`Error resending verification code. ${err.message}`);
+  }
+};
+
+// Changing a password requires the current one, unlike the general profile update.
+export const changePasswordService = async (userId, data) => {
+  try {
+    const { error } = validateChangePassword.validate(data);
+    if (error) throw new Error(`${error.message}`);
+
+    const user = await Users.findById(userId).select("+password").exec();
+    if (!user) throw new Error(`User record not found.`);
+
+    const { currentPassword, newPassword } = data;
+    if (currentPassword !== user.password && !bcryptjs.compareSync(currentPassword, `${user.password}`)) {
+      throw new Error(`Your current password is incorrect.`);
+    }
+    if (newPassword === currentPassword) throw new Error(`Choose a password you have not used just now.`);
+
+    await Users.findOneAndUpdate({ _id: userId }, { password: hash(newPassword) }, { new: true }).exec();
+    return { id: userId };
+  } catch (err) {
+    throw new Error(`Error changing password. ${err.message}`);
+  }
+};

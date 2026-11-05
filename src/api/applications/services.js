@@ -8,18 +8,25 @@ import { sendMailService } from "../../services/send-mail.js";
 
 const module = 'Applications';
 
-export const fetchService = async (query) => {
+// Non-admin callers only ever see their own applications: ones they created, or ones submitted with their email.
+export const fetchService = async (query, user) => {
     try {
         let { filter, skip, population, sort, projection } = aqp(query);
-        const searchQuery = filter.q ? filter.q : false;
-        if(searchQuery) {
-            const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+        const searchString = filter.q ? `${filter.q}` : false;
+        if(searchString) {
+            const pattern = new RegExp(searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "i");
             filter.$or = [
-              { name: { $regex: new RegExp(searchString, "i") } },
-              { shortName: { $regex: new RegExp(searchString, "i") } },
-              { $text: { $search: escaped, $caseSensitive: false } },
+              { firstName: { $regex: pattern } },
+              { lastName: { $regex: pattern } },
+              { email: { $regex: pattern } },
+              { role: { $regex: pattern } },
             ];
             delete filter.q;
+        }
+        if (user && user.userType !== 'ADMIN') {
+            const ownership = [{ createdBy: user.id }, { email: user.email }];
+            filter.$and = [...(filter.$and || []), { $or: ownership }];
+            delete filter.createdBy;
         }
         let { limit } = aqp(query);
         limit = setLimit(limit);
@@ -43,7 +50,7 @@ export const fetchService = async (query) => {
         return { payload: result, total, count, msg, skip, limit, sort };
 
     }catch ( err ) {
-        throw new Error(`Error retrieving ${module} record ${error.message}`);
+        throw new Error(`Error retrieving ${module} record ${err.message}`);
     }
 }
 

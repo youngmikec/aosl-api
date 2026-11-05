@@ -15,6 +15,13 @@ export const validateCreate = joi.object({
   type: joi.string().valid(...Object.values(JOB.TYPE)).trim().required(),
   paymentDuration: joi.string().valid(...Object.values(JOB.PAYMENTDURATION)).trim().required(),
   paymentMethod: joi.string().valid(...Object.values(JOB.PAYMENTMETHOD)).trim().required(),
+  workMode: joi.string().valid(...Object.values(JOB.WORKMODE)).trim().optional(),
+  status: joi.string().valid(...Object.values(JOB.STATUS)).trim().optional(),
+  location: joi.string().trim().optional(),
+  level: joi.string().valid(...Object.values(JOB.LEVEL)).trim().optional(),
+  startDate: joi.date().optional(),
+  accredited: joi.boolean().optional(),
+  responsibilities: joi.array().items(joi.string()).optional(),
   jobRequirements: joi.array().items(joi.string()).required(),
   createdBy: joi
     .string()
@@ -32,6 +39,13 @@ export const validateUpdate = joi.object({
   termDuration: joi.string().trim().optional(),
   paymentDuration: joi.string().valid(...Object.values(JOB.PAYMENTDURATION)).trim().optional(),
   paymentMethod: joi.string().valid(...Object.values(JOB.PAYMENTMETHOD)).trim().optional(),
+  workMode: joi.string().valid(...Object.values(JOB.WORKMODE)).trim().optional(),
+  status: joi.string().valid(...Object.values(JOB.STATUS)).trim().optional(),
+  location: joi.string().trim().optional(),
+  level: joi.string().valid(...Object.values(JOB.LEVEL)).trim().optional(),
+  startDate: joi.date().optional(),
+  accredited: joi.boolean().optional(),
+  responsibilities: joi.array().items(joi.string()).optional(),
   jobRequirements: joi.array().items(joi.string()).optional(),
   updatedBy: joi
     .string()
@@ -55,10 +69,15 @@ export const schema = {
     enum: Object.values(JOB.WORKMODE),
     select: true 
   },
+  location: { type: String, trim: true, default: "United Kingdom", select: true },
+  level: { type: String, enum: Object.values(JOB.LEVEL), select: true },
+  startDate: { type: Date, select: true },
+  accredited: { type: Boolean, default: false, select: true },
+  responsibilities: { type: Array, default: [], select: true },
   type: {
     type: String,
     enum: Object.values(JOB.TYPE),
-    default: JOB.STATUS.WORK,
+    default: JOB.TYPE.WORK,
     required: true,
     select: true,
   },

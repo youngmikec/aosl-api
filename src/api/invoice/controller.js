@@ -6,6 +6,7 @@ import {
   fetchPublicService,
   createInvoiceOrderService,
   updateClientDetailService,
+  updateService,
   confirmAndCaptureOrderService,
 } from './services.js';
 
@@ -71,6 +72,16 @@ export const deleteHandler = async (req, res) => {
   try {
     const { recordId } = req.params;
     const result = await deleteService(recordId);
+    return success(res, 200, result);
+  } catch (err) {
+    return fail(res, 400, `${err.message}`);
+  }
+}
+
+export const updateHandler = async (req, res) => {
+  try {
+    const { recordId } = req.params;
+    const result = await updateService(recordId, req.body);
     return success(res, 200, result);
   } catch (err) {
     return fail(res, 400, `${err.message}`);

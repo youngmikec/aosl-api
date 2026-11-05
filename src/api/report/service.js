@@ -21,6 +21,10 @@ export const fetchService = async (query) => {
         .exec();
 
         const users = await Users.countDocuments({}).exec();
+        const recentOrders = await Orders.find({})
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
         
         const values = await Promise.all([
             totalOrders,
@@ -28,7 +32,8 @@ export const fetchService = async (query) => {
             acceptedApplications,
             completedOrders,
             recentApplications,
-            users
+            users,
+            recentOrders
         ]);
         
         const result = {
@@ -37,7 +42,8 @@ export const fetchService = async (query) => {
             acceptedApplications: values[2],
             completedOrders: values[3],
             recentApplications: values[4],
-            users: values[5]
+            users: values[5],
+            recentOrders: values[6]
         }
 
         const msg = `Reports(s) retrieved successfully!`;

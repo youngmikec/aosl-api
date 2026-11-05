@@ -53,19 +53,20 @@ export const fetchByBlogIdService = async (blogId, query) => {
         limit = setLimit(limit);
         if (!filter.deleted) filter.deleted = 0;
 
-        const result = await Comment.find({ blog: blogId })
-            .populate(population)
-            .sort(sort)
+        const visible = { blog: blogId, isApproved: { $ne: false }, deleted: { $ne: true } };
+        const total = await Comment.countDocuments(visible).exec();
+        // Display fields only: commenter emails are never exposed publicly.
+        const result = await Comment.find(visible)
+            .sort({ createdAt: -1 })
             .limit(limit)
             .skip(skip)
-            .select(projection)
+            .select('commenterName content likes isGuest')
+            .select('+createdAt')
             .exec();
-        
-        if(!result){
-            throw new Error(`${module} record not found`);
-        }
+
+        const count = result.length;
         const msg = `comment retrieved successfully!`;
-        return { payload: result, total: 1, count: 1, msg, skip, limit, sort };
+        return { payload: result, total, count, msg, skip, limit, sort };
 
     }catch ( err ) {
         throw new Error(`Error retrieving ${module} record ${err.message}`);
@@ -78,6 +79,11 @@ export const postCommentService = async (data) => {
         if(error) throw new Error(`${error.message}`);
 
         let { isGuest, user } = data;
+
+        const post = await Blog.findOne({ _id: data.blog, deleted: { $ne: true } }).select('status enableComments').exec();
+        if (!post || post.status !== 'PUBLISHED') throw new Error('Blog post not found');
+        if (!post.enableComments) throw new Error('Comments are turned off for this post');
+        data.content = `${data.content}`.trim();
 
         if(!isGuest && user){
             const returnedUser = await Users.findById(user).exec();

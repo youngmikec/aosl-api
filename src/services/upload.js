@@ -6,7 +6,9 @@ export const uploadImage = async (imagePath) => {
         use_filename: true,
         unique_filename: false,
         overwrite: true,
-        folder: 'aosl-images'
+        folder: 'aosl-images',
+        // 'auto' lets Cloudinary accept PDFs and Word documents (CVs) as well as images.
+        resource_type: 'auto'
     };
 
     try {

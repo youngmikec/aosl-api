@@ -36,6 +36,26 @@ export const validateClientDetails = joi.object({
     .optional(),
 });
 
+export const validateUpdate = joi.object({
+  services: joi.array().items({
+    name: joi.string().trim().required(),
+    amount: joi.number().required(),
+    quantity: joi.number().required(),
+    totalAmount: joi.number().required(),
+  }).optional(),
+  clientName: joi.string().trim().optional(),
+  clientEmail: joi.string().email().optional(),
+  clientPhone: joi.string().trim().optional(),
+  clientAddress: joi.string().trim().optional(),
+  tax: joi.number().optional(),
+  discount: joi.number().optional(),
+  issueDate: joi.date().optional(),
+  dueDate: joi.date().optional(),
+  totalAmount: joi.number().optional(),
+  status: joi.string().trim().valid(...Object.values(INVOICE.STATUS)).optional(),
+  updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+});
+
 export const validateCreateOrder = joi.object({
   purchaseItems: joi.array().items({
     name: joi.string().required(),

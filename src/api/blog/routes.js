@@ -33,7 +33,7 @@ router.put('/blog-posts/:recordId', [checkAuth, isValidAdmin], updateHandler);
 
 
 // endpoint to publish and unpublish blog post.
-router.put('/blog-posts/:recordId', [checkAuth, isValidAdmin], publishHandler);
+router.put('/blog-posts/:recordId/publish', [checkAuth, isValidAdmin], publishHandler);
 
 
 // endpoint to delete a blog post [protected]

@@ -2,6 +2,7 @@ import aqp from "api-query-params";
 import Users from "../users/model.js";
 import { uploadImage } from "../../services/upload.js";
 import { generateModelCode, setLimit, slugifyText } from "../../util/index.js";
+import { BLOG } from "../../constant/index.js";
 import Blog, { validateCreateBlog, validateUpdateBlog, validatePublishData, validateLikePost } from "./model.js";
 
 
@@ -47,42 +48,43 @@ export const adminFetchService = async (query) => {
 }
 
 
+// Public site: published posts only. The author is populated with display fields only (never email or phone),
+// whatever the caller asks for, and ?q= searches title, subtitle and tags.
 export const publicFetchService = async (query) => {
     try {
-        let { filter, skip, population, sort, projection } = aqp(query);
-        const searchQuery = filter.q ? filter.q : false;
-        if(searchQuery) {
-            const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+        let { filter, skip, sort, projection } = aqp(query);
+        if(filter.q) {
+            const pattern = new RegExp(`${filter.q}`.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "i");
             filter.$or = [
-              { name: { $regex: new RegExp(searchString, "i") } },
-              { shortName: { $regex: new RegExp(searchString, "i") } },
-              { $text: { $search: escaped, $caseSensitive: false } },
+              { title: { $regex: pattern } },
+              { subTitle: { $regex: pattern } },
+              { tags: { $regex: pattern } },
             ];
             delete filter.q;
         }
         let { limit } = aqp(query);
         limit = setLimit(limit);
-        if (!filter.deleted) filter.deleted = 0;
+        filter.deleted = { $ne: true };
+        filter.status = BLOG.STATUS.PUBLISHED;
 
         const total = await Blog.countDocuments(filter).exec();
 
         const result = await Blog.find(filter)
-            .populate(population)
-            .sort(sort)
+            .populate('author', 'firstName lastName profileImage')
+            .sort(sort && Object.keys(sort).length ? sort : { createdAt: -1 })
             .limit(limit)
             .skip(skip)
-            .select(projection)
+            .select(projection || {})
+            // createdAt is excluded by default in the schema, so it is added back explicitly.
+            .select('+createdAt')
             .exec();
         
-        if(!result){
-            throw new Error(`${module} record not found`);
-        }
         const count = result.length;
         const msg = `${count} ${module} record(s) retrieved successfully!`;
         return { payload: result, total, count, msg, skip, limit, sort };
 
     }catch ( err ) {
-        throw new Error(`Error retrieving ${module} record ${error.message}`);
+        throw new Error(`Error retrieving ${module} record ${err.message}`);
     }
 }
 
@@ -221,7 +223,7 @@ export async function publishService(recordId, data, user) {
 
         const returnedBlog = await Blog.findById(recordId).exec();
         if (!returnedBlog) throw new Error(`${module} record not found.`);
-        if (`${returnedBlog.createdBy}` !== user.id || (user.userType !== 'ADMIN')) {
+        if (user.userType !== 'ADMIN') {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
 

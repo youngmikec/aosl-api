@@ -6,19 +6,22 @@ import { uploadImage } from "../../services/upload.js";
 
 const module = 'Jobs';
 
+// ?q= searches title, company and location (the previous implementation referenced an undefined variable).
+const applySearch = (filter) => {
+    if (!filter.q) return;
+    const pattern = new RegExp(`${filter.q}`.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "i");
+    filter.$or = [
+        { title: { $regex: pattern } },
+        { companyName: { $regex: pattern } },
+        { location: { $regex: pattern } },
+    ];
+    delete filter.q;
+};
+
 export const fetchService = async (query) => {
     try {
         let { filter, skip, population, sort, projection } = aqp(query);
-        const searchQuery = filter.q ? filter.q : false;
-        if(searchQuery) {
-            const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-            filter.$or = [
-              { name: { $regex: new RegExp(searchString, "i") } },
-              { shortName: { $regex: new RegExp(searchString, "i") } },
-              { $text: { $search: escaped, $caseSensitive: false } },
-            ];
-            delete filter.q;
-        }
+        applySearch(filter);
         let { limit } = aqp(query);
         limit = setLimit(limit);
         if (!filter.deleted) filter.deleted = 0;
@@ -41,7 +44,7 @@ export const fetchService = async (query) => {
         return { payload: result, total, count, msg, skip, limit, sort };
 
     }catch ( err ) {
-        throw new Error(`Error retrieving ${module} record ${error.message}`);
+        throw new Error(`Error retrieving ${module} record ${err.message}`);
     }
 }
 
@@ -49,19 +52,12 @@ export const fetchService = async (query) => {
 export const fetchPublicService = async (query) => {
     try {
         let { filter, skip, population, sort, projection } = aqp(query);
-        const searchQuery = filter.q ? filter.q : false;
-        if(searchQuery) {
-            const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-            filter.$or = [
-              { name: { $regex: new RegExp(searchString, "i") } },
-              { shortName: { $regex: new RegExp(searchString, "i") } },
-              { $text: { $search: escaped, $caseSensitive: false } },
-            ];
-            delete filter.q;
-        }
+        applySearch(filter);
         let { limit } = aqp(query);
         limit = setLimit(limit);
         if (!filter.deleted) filter.deleted = 0;
+        // Closed opportunities are not shown on the public site.
+        if (!filter.status) filter.status = { $ne: 'CLOSED' };
 
         const total = await Jobs.countDocuments(filter).exec();
 
@@ -81,7 +77,7 @@ export const fetchPublicService = async (query) => {
         return { payload: result, total, count, msg, skip, limit, sort };
 
     }catch ( err ) {
-        throw new Error(`Error retrieving ${module} record ${error.message}`);
+        throw new Error(`Error retrieving ${module} record ${err.message}`);
     }
 }
 
@@ -129,12 +125,11 @@ export async function updateService(recordId, data, user) {
         if (`${returnedJobs.createdBy}` !== user.id && (user.userType !== 'ADMIN')) {
             throw new Error(`user ${user.email} does not have the permission to update`);
         }
-        const { networkImage } = data;
-        if(networkImage){
-            const uploadResult = await uploadImage(networkImage);
-            data.networkImage = uploadResult.url;
-        }else {
-            console.log('no network image found');
+        // Only a freshly chosen image arrives as a data URL; an unchanged one is already a hosted URL.
+        const { jobImage } = data;
+        if(jobImage && `${jobImage}`.startsWith('data:')){
+            const uploadResult = await uploadImage(jobImage);
+            data.jobImage = uploadResult.url;
         }
       
       const result = await Jobs.findOneAndUpdate({ _id: recordId }, data, {

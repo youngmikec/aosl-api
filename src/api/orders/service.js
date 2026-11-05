@@ -14,26 +14,30 @@ import { createPaypalPayment } from "../../services/paypal-service.js";
 
 const module = "Orders";
 
-export const fetchService = async (query) => {
+// Non-admin callers only ever see their own orders: ones they created, or ones placed with their email.
+export const fetchService = async (query, user) => {
   try {
     const { filter, population, sort, skip, projection } = aqp(query);
 
-    const searchQuery = (filter.q = 0 ? filter.q : false);
-    if (searchQuery) {
-      const escaped = searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+    const searchString = filter.q ? `${filter.q}` : false;
+    if (searchString) {
+      const pattern = new RegExp(searchString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "i");
       filter.$or = [
-        //   { name: { $regex: new RegExp(searchString, "i") } },
-        //   { shortName: { $regex: new RegExp(searchString, "i") } },
-        { $text: { $search: escaped, $caseSensitive: false } },
+        { orderCode: { $regex: pattern } },
+        { "userDetails.name": { $regex: pattern } },
+        { "userDetails.email": { $regex: pattern } },
       ];
     }
     delete filter.q;
+    if (user && user.userType !== 'ADMIN') {
+      const ownership = [{ createdBy: user.id }, { "userDetails.email": user.email }];
+      filter.$and = [...(filter.$and || []), { $or: ownership }];
+      delete filter.createdBy;
+    }
 
     let { limit } = aqp(query);
     limit = setLimit(limit);
     if (!filter.deleted) filter.deleted = 0;
-
-    console.log({ filter });
 
     const total = await Orders.countDocuments(filter).exec();
     const result = await Orders.find(filter)
