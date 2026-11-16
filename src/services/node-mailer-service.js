@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport({
 
 
 export const nodeMailerService = async (senderEmail, recipientEmails, subject, message, attachments) => {
-  const joinedRecipientEmails = recipientEmails.length > 1 ? recipientEmails.join(',') : recipientEmails[0];
+  const joinedRecipientEmails = Array.isArray(recipientEmails) ? recipientEmails.join(',') : recipientEmails;
   const serverHost = 'smtp.gmail.com';
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const transporter = nodemailer.createTransport({
