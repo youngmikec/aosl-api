@@ -1,31 +1,37 @@
 import mongoose from "mongoose";
 import joi from "joi";
-import { DATABASE } from "../../constant/index.js";
+import { CHAT, DATABASE } from "../../constant/index.js";
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
+const objectId = joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID");
 
+// Only admin-only groups are created through the API; support rooms are created automatically per customer.
 export const validateCreateRoom = joi.object({
-  name: joi.string().required(),
-  roomImage: joi.string().optional(),
-  members: joi.array().items(joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")).required(),
-  createdBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+  name: joi.string().trim().min(2).max(60).required(),
+  members: joi.array().items(objectId).min(1).required(),
+  createdBy: objectId.optional(),
 });
 
 export const validateUpdateRoom = joi.object({
-  name: joi.string().optional(),
-  roomImage: joi.string().optional(),
-  members: joi.array().items(joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")).optional(),
-  updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+  name: joi.string().trim().min(2).max(60).optional(),
+  members: joi.array().items(objectId).min(1).optional(),
+  updatedBy: objectId.optional(),
 });
 
 
 const chatRoomSchema = {
   name: { type: String, required: true },
+  type: { type: String, enum: Object.values(CHAT.ROOM_TYPE), default: CHAT.ROOM_TYPE.SUPPORT, select: true },
+  // SUPPORT rooms belong to exactly one customer; every admin can read them by role.
+  customer: { type: ObjectId, ref: 'Users', select: true },
+  // GROUP rooms: the admins who can see the room. SUPPORT rooms keep [customer, ...admins at creation] for older clients.
   members: [{ type: ObjectId, ref: 'Users' }],
-  roomImage: { type: String, select: true, default: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAjCAYAAAATx8MeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAS6SURBVHgB7ZdfTFNXHMe/9962FEtbSq2FIlBANpUp00znpiY6g7psGuYIJlsivkwzHzad8WG6zC3L9EEzX8Q3o9GFxG0RGC4zxAg6HTFg5I/SWQRpgUILLW25bbn39t670yXLXncuvpjwSW7Ow/3z+53f93fP+R5ggQVeLBxeAN3d3Xqf11vmLi+vrK+vT3Z0dCQxDxjMg51b122LJ5hjPJ9YH5+N2wRBhKwoAavVcm5waOgsNMJCIx/tXn0SwvQtRk7tmEvN2dKyDFlOg1EVV2xm5swrZWUnVVXVNGlN8h38eNvXAwPebzmGRUJgoajsPyU36A1gWBYcp4OqKlv+6u9/+LCnxwtKqGdy+vRpd3Njw+M91RtNVqsNja1/YjwYhd1sxtbVq7DS7Sb1Z5GKx3G2pbXj2ahvKyjRgZIx//Ptxfl5piOfHAKjy8G+Dz+FKspgiXwZkqIIXyCAEY8H+Vbzlrff+MB+pakpTBODuqfmYhOpTZVuIK0AigEcq4POYABrNILJyoI+M6oq0iQ5RVaQbbevBSXUSTntEscRecAZANJLUP+7RxobfCKBCJEukRl5Hl6PRw9KqOWDwDqc+Q40Nv+Mts5BlJeUYn9NDWwWC/xEtistLejq60OFzYalubmoKC42tN+/TxWCOqndVSvev9R8A+9tr0ZluRPhcBQ3b7QiHo1AZPUYHfXDSRJKxmIYj0Swd2lBLXmtmSYGdVK5FnNk84Y3sWH7HiyfnEVyIpxZmyBDQOdICGutFjhJ1WQ+gXh7O9x6NgBKqHsqx2q5K6VlRIeHYDBaYCooRI7LiTxXAfjxcRTa8uAil0oafYnNCqMuqwuUUFeq8K31f6xNiChyFYMzOyEIAozZKUiSilWrVqKkrAIWvR5iLAq3ffHIxGtV10EJdaUYx6bu0sVLapREDMpcCpGpEBouXkHvEw/u9T1GeGoKkfExyNEolucX7Kqrq5NpY2ja+2Rddm86GYQizOBq60/o7exDcDCEoQEvmtva4Pf5wIuiumzfvmFogH5JICh8rEAReOikCD4/cAh8OI7fb9/B0WNHESRVCnmfQhAl5mlTk4M87gMlmirVOZWuFhQFYngcLO+HJS8XNXW1sJhzwJBFM+MYVI5F3yy7FxrQ5BLsrtVXhWTEWmIzQ54OQZwMIub1I+obQYj0FJEOg9Mp3OkPVNfW7t/24MGtSzTfp5Lv8OFvcpN86uTQs+Gi58N6SIID77zqIhuiBFESyCAhQTxVIq2ia5Qn/komi+nY5q6u3tp166p++b9xqORzOJYclNPJA5zehGjCgB87/bg7GAa3aBFMmW3F5SIS5uG3JyGkJAUGgw4VFSX3JIm7TROH2k9duHDx3UePfBcmJ6fd0WgSDMPh9aI87KgsxOBUHDf7x4jxE2E0snC5nA2XL5/6jGEYhSaGJrt64kRDUSAw8Z0kSfWjoyFiUYhDYIinIgmyLAeTKQs5OdnfX7t29itoYF4Hh+PHfzgSDEbO+P0TnNNph98fhJn8gaWlrp7z50+sgUY0HxwynDr1xTm9XrdsxYryEUlKIz/fjuJi5/WqquW7MA/mVal/aWz8dbHHM/Llxo1renbu3HwVCyywwEvK32fN/17XlJTZAAAAAElFTkSuQmCC' },
-  createdAt: { type: Date, default: Date.now() },
+  lastMessage: { type: String, select: true },
+  lastMessageAt: { type: Date, select: true },
+  code: { type: String, select: true },
+  createdAt: { type: Date, default: Date.now },
   createdBy: { type: ObjectId, ref: "Users", select: true },
   updatedBy: { type: ObjectId, ref: "Users", select: false },
   deleted: { type: Boolean, default: false, select: false },
@@ -36,6 +42,10 @@ const chatRoomSchema = {
 const options = DATABASE.OPTIONS;
 
 const newSchema = new Schema(chatRoomSchema, options);
+
+newSchema.index({ type: 1, customer: 1 });
+newSchema.index({ members: 1, type: 1 });
+newSchema.index({ lastMessageAt: -1 });
 
 newSchema.set("collection", "chatRoom");
 

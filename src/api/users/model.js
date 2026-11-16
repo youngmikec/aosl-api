@@ -30,7 +30,18 @@ export const validateForgortPassword = joi.object({
     createdBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 })
 
+export const validateChangePassword = joi.object({
+  currentPassword: joi.string().required(),
+  newPassword: joi.string().min(8).required(),
+  updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
+})
+
+export const validateResendCode = joi.object({
+  email: joi.string().email().required(),
+})
+
 export const validateAdminUpdate = joi.object({
+  isSuspended: joi.boolean().optional(),
   code: joi.string().min(5).max(5).optional(),
   email: joi.string().email().optional(),
   password: joi.string().trim().optional(),
@@ -54,7 +65,7 @@ export const validateCreate = joi.object({
     phone: joi.string().trim().required(),
     email: joi.string().email().required(),
     password: joi.string().required(),
-    country: joi.string().valid(...COUNTRIES.map(country => country.name)).required(),
+    country: joi.string().trim().required(),
 })
 
 export const validateUserUpdate = joi.object({
@@ -63,7 +74,7 @@ export const validateUserUpdate = joi.object({
     phone: joi.string().trim().optional(),
     email: joi.string().email().optional(),
     password: joi.string().optional(),
-    country: joi.string().valid(...COUNTRIES.map(country => country.name)).optional(),
+    country: joi.string().trim().optional(),
     profileImage: joi.string().trim().optional(),
     updatedBy: joi.string().regex(DATABASE.OBJECT_ID_REGEX, "valid objectID").optional(),
 })
@@ -104,6 +115,7 @@ export const schema = {
    //  guarantorPhone: { type: String },
     isProfileComplete: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
+    isSuspended: { type: Boolean, default: false, select: true },
     approvedBy: { type: ObjectId },
     approvedDate: { type: Date },
     verifiedBy: { type: ObjectId },

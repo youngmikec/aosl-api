@@ -12,7 +12,7 @@ import { fail, response, success } from "../../util/response.js"
 
 export const fetchHandler = async (req, res) => {
     try {  
-        const result = await fetchService(req.query);
+        const result = await fetchService(req.query, req.user);
         return response(res, 200, result);
     }catch (err) {
         return fail(res, 400, `${err.message}`);

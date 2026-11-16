@@ -1,6 +1,6 @@
 import aqp from "api-query-params";
 import { generateCode, generateModelCode, setLimit } from "../../util/index.js";
-import Invoice, { validateClientDetails, validateCreate, validateCreateOrder } from './model.js';
+import Invoice, { validateClientDetails, validateCreate, validateCreateOrder, validateUpdate } from './model.js';
 import { capturePaypalOrder, checkPaypalOrderStatus, createPaypalOrder } from "../../services/paypal-service.js";
 import { PAYPAL, INVOICE } from "../../constant/app-constants.js";
 import { createOrderService } from "../orders/service.js";
@@ -314,5 +314,19 @@ export async function deleteService(recordId) {
       return result;
   } catch (err) {
       throw new Error(`Error deleting Invoice record. ${err.message}`);
+  }
+};
+
+// Admin edit of an invoice. Totals are taken as sent, matching how createService stores them.
+export const updateService = async (recordId, data) => {
+  try {
+    const { error } = validateUpdate.validate(data);
+    if (error) throw new Error(`${error.message}`);
+
+    const result = await Invoice.findOneAndUpdate({ _id: recordId }, data, { new: true }).exec();
+    if (!result) throw new Error(`Invoice record not found.`);
+    return result;
+  } catch (err) {
+    throw new Error(`Error updating Invoice. ${err.message}`);
   }
 };

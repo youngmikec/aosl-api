@@ -9,7 +9,7 @@ const { ObjectId } = Schema.Types;
 
 export const validateCreate = joi.object({
     fullName: joi.string().trim().required(),
-    phone: joi.string().trim().max(11).required(),
+    phone: joi.string().trim().max(20).optional(),
     email: joi.string().email().required(),
     subject: joi.string().required(),
     message: joi.string().max(5000).required(),
@@ -20,7 +20,7 @@ export const validateCreate = joi.object({
 
 export const validateUpdate = joi.object({
     fullName: joi.string().trim().optional(),
-    phone: joi.string().trim().max(11).optional(),
+    phone: joi.string().trim().max(20).optional(),
     email: joi.string().email().optional(),
     subject: joi.string().optional(),
     message: joi.string().max(5000).optional(),
@@ -32,7 +32,7 @@ export const validateUpdate = joi.object({
 
 export const schema = {
     fullName: { type: String, required: true, select: true },
-    phone: { type: String, required: true, select: true },
+    phone: { type: String, select: true },
     email: { type: String, required: true, select: true },
     code: { type: String, trim: true },
     subject: { type: String, required: true, select: true },

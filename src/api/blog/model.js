@@ -106,6 +106,11 @@ export const validatePublishData = joi.object({
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
     .optional(),
+    // The auth middleware stamps updatedBy on every PUT.
+    updatedBy: joi
+    .string()
+    .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")
+    .optional(),
 });
 
 export const validateLikePost = joi.object({

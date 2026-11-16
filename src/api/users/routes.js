@@ -16,7 +16,9 @@ import {
   sendOTPHandler,
   resetCodeHandler,
   forgotPasswordHandler,
-  resetCodeVerificationHandler
+  resetCodeVerificationHandler,
+  resendVerificationCodeHandler,
+  changePasswordHandler
 } from "./controller.js";
 
 const router = express.Router();
@@ -53,6 +55,8 @@ router.get("/users/info/:variable", [checkAuth], fetchAnyHandler);
  */
 router.post("/users/register", createHandler);
 router.post("/users/verify", verifyEmailHandler);
+// Sends the verification code again to an unverified account.
+router.post("/users/resend-code", resendVerificationCodeHandler);
 router.post("/users/forgotPassword", forgotPasswordHandler);
 router.post("/users/resetCode/verify", resetCodeVerificationHandler);
 
@@ -144,6 +148,8 @@ router.put(
  * @apiError 401 master access only.
  */
 router.put("/user/me/update", [checkAuth], updateByUserHandler);
+// Change password: requires the current password.
+router.put("/users/me/password", [checkAuth], changePasswordHandler);
 router.put("/user/pin/wallet", [checkAuth], updatePinHandler);
 
 /**

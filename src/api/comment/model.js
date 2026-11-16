@@ -6,14 +6,14 @@ const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 export const validatePostComment = joi.object({
-    content: joi.string().required(),
+    content: joi.string().trim().min(2).max(1000).required(),
     isGuest: joi.boolean().required(),
     commenterName: joi.string().trim().when('isGuest', {
         is: true,
         then: joi.required(),
         otherwise: joi.optional()
     }),
-    commenterEmail: joi.string().optional(),
+    commenterEmail: joi.string().email().optional(),
     blog: joi
     .string()
     .regex(DATABASE.OBJECT_ID_REGEX, "valid objectID")

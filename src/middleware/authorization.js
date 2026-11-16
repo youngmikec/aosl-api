@@ -54,6 +54,7 @@ export async function checkAuth(req, res, next) {
     };
     delete req.query.apiKey;
     if (user.deleted == 1) throw new Error("User is deleted");
+    if (user.isSuspended) throw new Error("Account is suspended");
     if (user.accessLevel == 0) throw new Error("Access is denied");
     return checkRequestMethod(req, res, next);
   } catch (err) {

@@ -14,6 +14,8 @@ import {
     passwordResetCodeService,
     resetCodeVerificationService,
     forgotPasswordService,
+    resendVerificationCodeService,
+    changePasswordService,
   } from "./service.js";
   import {
     // loging,
@@ -201,6 +203,24 @@ import { response, success, fail } from '../../util/response.js';
       return success(res, 200, result, "OTP sent successfully!");
     } catch (err) {
     //   loging(module, req, err);
+      return fail(res, 400, `${err.message}`);
+    }
+  }
+
+  export const resendVerificationCodeHandler = async (req, res) => {
+    try {
+      const result = await resendVerificationCodeService(req.body);
+      return success(res, 200, result, "If the account exists, a new verification email has been sent.");
+    } catch (err) {
+      return fail(res, 400, `${err.message}`);
+    }
+  }
+
+  export const changePasswordHandler = async (req, res) => {
+    try {
+      const result = await changePasswordService(req.user.id, req.body);
+      return success(res, 200, result, "Password changed successfully!");
+    } catch (err) {
       return fail(res, 400, `${err.message}`);
     }
   }

@@ -6,6 +6,7 @@ import {
   clientDetailsHandler,
   createOrderHandler,
   deleteHandler,
+  updateHandler,
   confirmAndCaptureOrderHandler
 } from './controller.js';
 import { checkAuth, isValidAdmin } from '../../middleware/index.js';
@@ -22,6 +23,8 @@ router.post('/invoice/updateInvoiceClientDetails/:recordId', clientDetailsHandle
 
 // router.post('/create-order', [AuthorizePaypal], createOrderHandler);
 router.post('/invoice/create-order', [AuthorizePaypal], createOrderHandler);
+
+router.put('/invoice/:recordId', [checkAuth, isValidAdmin], updateHandler);
 
 router.delete('/invoice/:recordId', [checkAuth, isValidAdmin], deleteHandler);
 

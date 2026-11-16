@@ -196,8 +196,20 @@ export const ENTITY = {
 export const JWT = {
   saltRounds: 2,
   jwtSecret: "all_occupation_services_world_best",
-  tokenExpireTime: "1m",
+  tokenExpireTime: "1h",
   adminTokenExpirationTime: '5h'
+};
+
+export const CHAT = {
+  ROOM_TYPE: {
+    // One conversation per customer; every admin can see and answer it.
+    SUPPORT: "SUPPORT",
+    // Admin-only group; only its members can see it.
+    GROUP: "GROUP",
+  },
+  MAX_MESSAGE_LENGTH: 2000,
+  PAGE_SIZE: 30,
+  MAX_PAGE_SIZE: 100,
 };
 
 export const SMS = {
@@ -248,6 +260,11 @@ export const JOB = {
   STATUS: {
     OPEN: "OPEN",
     CLOSED: "CLOSED",
+  },
+  LEVEL: {
+    ENTRY: "ENTRY",
+    INTERMEDIATE: "INTERMEDIATE",
+    SENIOR: "SENIOR",
   },
   WORKMODE: {
     REMOTE: 'REMOTE',
